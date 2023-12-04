@@ -3,11 +3,11 @@
 #include <stdbool.h>
 
 #include "cells.h"
-#include "enemies.h"
 #include "floorGen.h"
 #include "directions.h"
 #include "inputs.h"
 #include "lfsr.h"
+#include "npc.h"
 #include "playerPos.h"
 
 struct floor {
@@ -24,31 +24,31 @@ struct room {
 	Coor doors[MAX_DIRS];
 	Room adj[MAX_DIRS];
 	Coor isEnd;
-	int numEns;
-	Enemy ens[MAX_ENS];
+	int numNPCs;
+	NPC ens[MAX_NPCS];
 };
 
 //////////////////////// ENEMY ////////////////////////
 
 static void genEnemies(Room room) {
-	int numEn = rand(MAX_ENS);
-	room->numEns = numEn;
-	currFloor->totalEns += numEn;
-	for (int i = 0; i < numEn; i++) {
+	int numNPC = rand(MAX_NPCS);
+	room->numNPCs = numNPC;
+	currFloor->totalEns += numNPC;
+	for (int i = 0; i < numNPC; i++) {
 		// Make enemy and randomise their coordinates
-		Enemy newEn = EnemyNew(SKELETON); // add more floors and difficulties
-		setEnCoor(newEn, rand(room->roomW - 2) + 1, rand(room->roomH - 2) + 1);
-		room->ens[i] = newEn;
+		NPC newNpc = NPCNew(SKELETON); // add more floors and difficulties
+		setNpcCoor(newNpc, rand(room->roomW - 2) + 1, rand(room->roomH - 2) + 1);
+		room->ens[i] = newNpc;
 	}
 }
 
-int isEnemy(int x, int y) {
+int isNPC(int x, int y) {
 	int coorXY = x * 100 + y;
 	Room currRoom = currFloor->currRoom;
-	for (int i = 0; i < currRoom->numEns; i++) {
-		Enemy currEn = currRoom->ens[i];
-		if (getEnCoor(currEn) == coorXY) {
-			return getEnEnLvl(currEn);
+	for (int i = 0; i < currRoom->numNPCs; i++) {
+		NPC currEn = currRoom->ens[i];
+		if (getNpcCoor(currEn) == coorXY) {
+			return getNpcNpcType(currEn);
 		}
 	}
 	
@@ -261,10 +261,10 @@ Room RoomNew(void) {
 	
 	// Stub metadata
 	newRoom->isEnd = 0;
-	newRoom->numEns = 0;
+	newRoom->numNPCs = 0;
 	
 	// Stub enemies
-	for (int i = 0; i < MAX_ENS; i++) {
+	for (int i = 0; i < MAX_NPCS; i++) {
 		newRoom->ens[i] = NULL;
 	}
 	
@@ -273,8 +273,8 @@ Room RoomNew(void) {
 
 void RoomFree(Room newRoom) {
 	// Free enemies
-	for (int i = 0; i < MAX_ENS; i++) {
-		EnemyFree(newRoom->ens[i]);
+	for (int i = 0; i < MAX_NPCS; i++) {
+		NPCFree(newRoom->ens[i]);
 	}
 	
 	free(newRoom);

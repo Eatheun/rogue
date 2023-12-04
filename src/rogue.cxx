@@ -5,7 +5,7 @@
 #include "cells.h"
 #include "directions.h"
 #include "floorGen.h"
-#include "enemies.h"
+#include "npc.h"
 #include "inputs.h"
 #include "lfsr.h"
 #include "movements.h"
@@ -32,9 +32,9 @@ void printFullMap(void)
 			{
 				printf(WALL);
 			}
-			else if (isEnemy(j, i) != 0)
+			else if (isNPC(j, i) != 0)
 			{
-				int ret = isEnemy(j, i);
+				int ret = isNPC(j, i);
 				if (ret == SKELETON) {
 					printf(SKELETON_CELL);
 				} else if (ret == GOBLIN) {

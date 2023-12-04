@@ -1,7 +1,7 @@
 #ifndef LFSR_H
 #define LFSR_H
 
-static int seed;
+static uint32_t seed;
 
 void setSeed();
 int rand(int num);
