@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
@@ -6,14 +7,14 @@
 #include "lfsr.h"
 
 void setSeed(void) {
-	int id = (int) time(NULL);
+	unsigned int id = (unsigned int) time(NULL);
 	seed = (id & 0xff) >> 3; // fancy hashing
 	seed |= seed << 24 | seed << 16 | seed << 8; // whoooa
 	seed ^= id; // whooooooooa
 }
 
 int rand(int num) {
-	int bits = seed;
+	unsigned int bits = seed;
 	
 	bits ^= seed >> 1;
 	bits ^= seed >> 3;
