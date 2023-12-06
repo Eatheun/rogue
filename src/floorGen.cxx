@@ -112,6 +112,12 @@ static bool isRoom(int tx, int ty) {
 	return map[ty][tx];
 }
 
+static bool isValidRoom(int tx, int ty) {
+	bool isValidTx = 0 <= tx && tx < MAX_FLOOR_SIZE;
+	bool isValidTy = 0 <= ty && ty < MAX_FLOOR_SIZE;
+	return isValidTx && isValidTy;
+}
+
 static Room generateFloorRec(Room newRoom, Room prevRoom, int prevX, int prevY, int *limit, int prevDoor, int prob) {
 	if (*limit >= MAX_ROOMS || newRoom == NULL) {
 		return NULL;
@@ -140,7 +146,12 @@ static Room generateFloorRec(Room newRoom, Room prevRoom, int prevX, int prevY, 
 		} else if (ranGD == RIGHT) {
 			tx++;
 		}
-		
+
+		// Check if valid generation
+		if (!isValidRoom(tx, ty)) {
+			continue;
+		}
+
 		if (chance(prob, 7) && !isRoom(tx, ty)) {
 			// Make the new room and mark coordinates on the map
 			Room tempRoom = RoomNew();
@@ -168,8 +179,8 @@ void generateFloor(void) {
 	// Start the generation
 	currFloor = FloorNew();
 	Room start = RoomNew();
-	floorX = MAX_ROOMS;
-	floorY = MAX_ROOMS;
+	floorX = MAX_RADIUS;
+	floorY = MAX_RADIUS;
 	map[floorY][floorX] = true;
 	
 	// Generate the rooms and make the start
