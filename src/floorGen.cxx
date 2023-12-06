@@ -8,14 +8,13 @@
 #include "inputs.h"
 #include "lfsr.h"
 #include "npc.h"
-#include "playerPos.h"
 
 struct floor {
 	Room currRoom;
 	int currRoomH;
 	int currRoomW;
 	Room endRoom;
-	int totalEns;
+	int totalNpcs;
 };
 
 struct room {
@@ -25,20 +24,20 @@ struct room {
 	Room adj[MAX_DIRS];
 	Coor isEnd;
 	int numNPCs;
-	NPC ens[MAX_NPCS];
+	NPC npcs[MAX_NPCS];
 };
 
 //////////////////////// ENEMY ////////////////////////
 
-static void genEnemies(Room room) {
+static void genNPCs(Room room) {
 	int numNPC = rand(MAX_NPCS);
 	room->numNPCs = numNPC;
-	currFloor->totalEns += numNPC;
+	currFloor->totalNpcs += numNPC;
 	for (int i = 0; i < numNPC; i++) {
 		// Make enemy and randomise their coordinates
-		NPC newNpc = NPCNew(SKELETON); // add more floors and difficulties
+		NPC newNpc = NPCNew(rand(NUM_NPC_TYPES));
 		setNpcCoor(newNpc, rand(room->roomW - 2) + 1, rand(room->roomH - 2) + 1);
-		room->ens[i] = newNpc;
+		room->npcs[i] = newNpc;
 	}
 }
 
@@ -46,13 +45,13 @@ int isNPC(int x, int y) {
 	int coorXY = x * 100 + y;
 	Room currRoom = currFloor->currRoom;
 	for (int i = 0; i < currRoom->numNPCs; i++) {
-		NPC currEn = currRoom->ens[i];
+		NPC currEn = currRoom->npcs[i];
 		if (getNpcCoor(currEn) == coorXY) {
 			return getNpcNpcType(currEn);
 		}
 	}
 	
-	return 0;
+	return NUM_NPC_TYPES;
 }
 
 //////////////////////// FLOORS ////////////////////////
@@ -77,7 +76,7 @@ Floor FloorNew(void) {
 	Floor newFloor = (Floor) malloc(sizeof(struct floor));
 	newFloor->currRoom = NULL;
 	newFloor->endRoom = NULL;
-	newFloor->totalEns = 0;
+	newFloor->totalNpcs = 0;
 	return newFloor;
 }
 
@@ -125,7 +124,7 @@ static Room generateFloorRec(Room newRoom, Room prevRoom, int prevX, int prevY, 
 	}
 	
 	// Generate enemies for the room
-	genEnemies(newRoom);
+	genNPCs(newRoom);
 	
 	for (int i = 0; i < 10; i++) {
 		// Randomise the chances a bit and get next room directions
@@ -179,52 +178,6 @@ void generateFloor(void) {
 	setCurrRoom(seededRoom);
 }
 
-bool changeRoom(void) {
-	// Simplify the direction
-	int tempTx = _px;
-	int tempTy = _py;
-	int dirHandled = handleWASD(&tempTx, &tempTy);
-	if (dirHandled == MAX_DIRS) {
-		dirHandled = handleArrows(&tempTx, &tempTy);
-	}
-	if (dirHandled == MAX_DIRS) {
-		return false;
-	}
-	
-	// Find and set new room
-	Room newRoom;
-	if ((_py == 0 && dirHandled == UP) ||
-		(_px == 0 && dirHandled == LEFT) ||
-		(_py == _currRoomH - 1 && dirHandled == DOWN) ||
-		(_px == _currRoomW - 1 && dirHandled == RIGHT)) {
-		newRoom = getAdjRoom(_currRoom, dirHandled);
-	} else {
-		return false;
-	}
-	setCurrRoom(newRoom);
-	
-	// Set player position
-	if (dirHandled == UP) {
-		setPx(_currRoomW / 2);
-		setPy(_currRoomH - 1);
-		floorY--;
-	} else if (dirHandled == LEFT) {
-		setPx(_currRoomW - 1);
-		setPy(_currRoomH / 2);
-		floorX--;
-	} else if (dirHandled == DOWN) {
-		setPx(_currRoomW / 2);
-		setPy(0);
-		floorY++;
-	} else if (dirHandled == RIGHT) {
-		setPx(0);
-		setPy(_currRoomH / 2);
-		floorX++;
-	}
-	
-	return true;
-}
-
 Room getCurrRoom(void) {
 	return currFloor->currRoom;
 }
@@ -265,7 +218,7 @@ Room RoomNew(void) {
 	
 	// Stub enemies
 	for (int i = 0; i < MAX_NPCS; i++) {
-		newRoom->ens[i] = NULL;
+		newRoom->npcs[i] = NULL;
 	}
 	
 	return newRoom;
@@ -274,7 +227,7 @@ Room RoomNew(void) {
 void RoomFree(Room newRoom) {
 	// Free enemies
 	for (int i = 0; i < MAX_NPCS; i++) {
-		NPCFree(newRoom->ens[i]);
+		NPCFree(newRoom->npcs[i]);
 	}
 	
 	free(newRoom);

@@ -38,7 +38,6 @@ void setFloorY(int ty);
 Floor FloorNew(void);
 void FloorClear(void);
 void generateFloor(void);
-bool changeRoom(void);
 Room getCurrRoom(void);
 void setCurrRoom(Room newRoom);
 
