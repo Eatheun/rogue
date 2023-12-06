@@ -299,3 +299,11 @@ bool isVisited(int floorX, int floorY) {
 void visitMap(int floorX, int floorY) {
 	map[floorY][floorX] = true;
 }
+
+bool isCorrXplrd(int corrX, int corrY) {
+	return corridors[corrY][corrX];
+}
+
+void xplrCorr(int corrX, int corrY) {
+	corridors[corrY][corrX] = true;
+}

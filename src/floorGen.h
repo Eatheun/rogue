@@ -5,8 +5,8 @@
 #define MAX_RADIUS MAX_ROOMS / 2
 #define MAX_FLOOR_SIZE 2 * MAX_RADIUS + 1
 #define MAX_CORR_SIZE 2 * MAX_FLOOR_SIZE + 1
-#define MIN_SIZE 17
-#define MAX_SIZE 31
+#define MIN_SIZE 13
+#define MAX_SIZE 19
 
 #define MAX(a, b) a > b ? a : b
 #define MIN(a, b) a < b ? a : b
@@ -59,5 +59,7 @@ int getRoomW(Room room);
 
 bool isVisited(int floorX, int floorY);
 void visitMap(int floorX, int floorY);
+bool isCorrXplrd(int corrX, int corrY);
+void xplrCorr(int corrX, int corrY);
 
 #endif // FLOOR_GEN_H

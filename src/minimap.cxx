@@ -5,6 +5,11 @@
 #include "floorGen.h"
 #include "minimap.h"
 
+static void setStdClr(void) {
+    printf(BLKBCK);
+    printf(WHTXT);
+}
+
 static void printBorder(void) {
     for (int i = 0; i < MAX_CORR_SIZE + 2; i++) {
         printf(MINM_BORDER);
@@ -17,8 +22,8 @@ static void moveDown(void) {
 
 void printMinimap(void) {
     printf("\e[1;%dH", (_currRoomW + 1) * 2); // Go to first line
-    printf(BLKBCK);
-    
+    setStdClr();
+
     // Top border
     printBorder();
     moveDown();
@@ -38,10 +43,18 @@ void printMinimap(void) {
                 } else {
                     printf(MINM_ROOM);
                 }
-                printf(BLKBCK); // gotta reset
+            } else if (isCorrXplrd(xChk + 1, yChk + 1)) {
+                if (xChk % 2 == 1 && yChk % 2 == 0) {
+                    printf(MINM_HCORR);
+                } else {
+                    printf(MINM_VCORR);
+                }
+
             } else {
                 printf(MINM_EMPTY);
             }
+
+            setStdClr(); // gotta reset
         }
         printf(MINM_BORDER);
         moveDown();

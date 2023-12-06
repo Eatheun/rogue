@@ -30,6 +30,30 @@ bool move(void) {
     return false;
 }
 
+static void playerPosChange(int dirHandled, int *xChk, int *yChk) {
+	if (dirHandled == UP) {
+		setPx(_currRoomW / 2);
+		setPy(_currRoomH - 1);
+		setFloorY(_floorY - 1);
+		(*yChk)--;
+	} else if (dirHandled == LEFT) {
+		setPx(_currRoomW - 1);
+		setPy(_currRoomH / 2);
+		setFloorX(_floorX - 1);
+		(*xChk)--;
+	} else if (dirHandled == DOWN) {
+		setPx(_currRoomW / 2);
+		setPy(0);
+		setFloorY(_floorY + 1);
+		(*yChk)++;
+	} else if (dirHandled == RIGHT) {
+		setPx(0);
+		setPy(_currRoomH / 2);
+		setFloorX(_floorX + 1);
+		(*xChk)++;
+	}
+}
+
 bool changeRoom(void) {
 	// Simplify the direction
 	int tempTx = _px;
@@ -51,25 +75,14 @@ bool changeRoom(void) {
 	}
 	setCurrRoom(newRoom);
 	
+	// Tracking corridors
+	int xChk = _floorX * 2 + 1;
+	int yChk = _floorY * 2 + 1;
+
 	// Set player position
-	if (dirHandled == UP) {
-		setPx(_currRoomW / 2);
-		setPy(_currRoomH - 1);
-		setFloorY(_floorY - 1);
-	} else if (dirHandled == LEFT) {
-		setPx(_currRoomW - 1);
-		setPy(_currRoomH / 2);
-		setFloorX(_floorX - 1);
-	} else if (dirHandled == DOWN) {
-		setPx(_currRoomW / 2);
-		setPy(0);
-		setFloorY(_floorY + 1);
-	} else if (dirHandled == RIGHT) {
-		setPx(0);
-		setPy(_currRoomH / 2);
-		setFloorX(_floorX + 1);
-	}
+	playerPosChange(dirHandled, &xChk, &yChk);
 	
 	visitMap(_floorX, _floorY);
+	xplrCorr(xChk, yChk);
 	return true;
 }
