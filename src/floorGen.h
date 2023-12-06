@@ -2,7 +2,8 @@
 #define FLOOR_GEN_H
 
 #define MAX_ROOMS 9
-#define MAX_FLOOR_SIZE 2 * MAX_ROOMS + 1
+#define MAX_RADIUS MAX_ROOMS / 2
+#define MAX_FLOOR_SIZE 2 * MAX_RADIUS + 1
 #define MIN_SIZE 17
 #define MAX_SIZE 31
 
