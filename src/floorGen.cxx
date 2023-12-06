@@ -15,7 +15,7 @@ struct floor {
 	int currRoomH;
 	int currRoomW;
 	Room endRoom;
-	int totalEns;
+	int totalNpcs;
 };
 
 struct room {
@@ -25,7 +25,7 @@ struct room {
 	Room adj[MAX_DIRS];
 	Coor isEnd;
 	int numNPCs;
-	NPC ens[MAX_NPCS];
+	NPC npcs[MAX_NPCS];
 };
 
 //////////////////////// ENEMY ////////////////////////
@@ -33,12 +33,12 @@ struct room {
 static void genNPCs(Room room) {
 	int numNPC = rand(MAX_NPCS);
 	room->numNPCs = numNPC;
-	currFloor->totalEns += numNPC;
+	currFloor->totalNpcs += numNPC;
 	for (int i = 0; i < numNPC; i++) {
 		// Make enemy and randomise their coordinates
 		NPC newNpc = NPCNew(rand(NUM_NPC_TYPES));
 		setNpcCoor(newNpc, rand(room->roomW - 2) + 1, rand(room->roomH - 2) + 1);
-		room->ens[i] = newNpc;
+		room->npcs[i] = newNpc;
 	}
 }
 
@@ -46,7 +46,7 @@ int isNPC(int x, int y) {
 	int coorXY = x * 100 + y;
 	Room currRoom = currFloor->currRoom;
 	for (int i = 0; i < currRoom->numNPCs; i++) {
-		NPC currEn = currRoom->ens[i];
+		NPC currEn = currRoom->npcs[i];
 		if (getNpcCoor(currEn) == coorXY) {
 			return getNpcNpcType(currEn);
 		}
@@ -77,7 +77,7 @@ Floor FloorNew(void) {
 	Floor newFloor = (Floor) malloc(sizeof(struct floor));
 	newFloor->currRoom = NULL;
 	newFloor->endRoom = NULL;
-	newFloor->totalEns = 0;
+	newFloor->totalNpcs = 0;
 	return newFloor;
 }
 
@@ -265,7 +265,7 @@ Room RoomNew(void) {
 	
 	// Stub enemies
 	for (int i = 0; i < MAX_NPCS; i++) {
-		newRoom->ens[i] = NULL;
+		newRoom->npcs[i] = NULL;
 	}
 	
 	return newRoom;
@@ -274,7 +274,7 @@ Room RoomNew(void) {
 void RoomFree(Room newRoom) {
 	// Free enemies
 	for (int i = 0; i < MAX_NPCS; i++) {
-		NPCFree(newRoom->ens[i]);
+		NPCFree(newRoom->npcs[i]);
 	}
 	
 	free(newRoom);
