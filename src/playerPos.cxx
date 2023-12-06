@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "cells.h"
+#include "floorGen.h"
 #include "playerPos.h"
 
 int getPx(void) {
@@ -21,7 +22,12 @@ void setPy(int ty) {
 
 void removePlayer(void) {
     printf("\e[%d;%dH", py + 1, px * 2 + 1); // Go to player position
-    printf(FLOOR);
+    if (isNPC(px, py) != NUM_NPC_TYPES) {
+        int ret = isNPC(px, py);
+        printf("%s", npcCells[ret]);
+    } else {
+        printf(FLOOR);
+    }
     printf("\e[0m"); // reset colour
 }
 
