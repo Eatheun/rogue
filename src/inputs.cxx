@@ -53,3 +53,12 @@ int handleArrows(int *tx, int *ty) {
     }
     return MAX_DIRS;
 }
+
+int handleAllDir(int *tx, int *ty) {
+    int ret;
+    if ((ret = handleWASD(tx, ty)) == MAX_DIRS) {
+        ret = handleArrows(tx, ty);
+    }
+
+    return ret;
+}

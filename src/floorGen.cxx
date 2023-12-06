@@ -183,10 +183,7 @@ bool changeRoom(void) {
 	// Simplify the direction
 	int tempTx = _px;
 	int tempTy = _py;
-	int dirHandled = handleWASD(&tempTx, &tempTy);
-	if (dirHandled == MAX_DIRS) {
-		dirHandled = handleArrows(&tempTx, &tempTy);
-	}
+	int dirHandled = handleAllDir(&tempTx, &tempTy);
 	if (dirHandled == MAX_DIRS) {
 		return false;
 	}

@@ -16,7 +16,7 @@ static bool isValidDir(int x, int y) {
 bool move(void) {
     int tx = _px;
     int ty = _py;
-    if (handleWASD(&tx, &ty) == MAX_DIRS && handleArrows(&tx, &ty) == MAX_DIRS) {
+    if (handleAllDir(&tx, &ty) == MAX_DIRS) {
         return false;
     }
     

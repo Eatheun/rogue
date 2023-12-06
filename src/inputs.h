@@ -19,5 +19,6 @@ int getDir(void);
 char getComm(void);
 int handleWASD(int *tx, int *ty);
 int handleArrows(int *tx, int *ty);
+int handleAllDir(int *tx, int *ty);
 
 #endif // ROGUE_INPUT_H
