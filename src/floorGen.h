@@ -19,6 +19,7 @@ typedef struct floor *Floor;
 typedef struct room *Room;
 
 static bool map[MAX_FLOOR_SIZE][MAX_FLOOR_SIZE];
+static bool corridors[2 * MAX_FLOOR_SIZE + 1][2 * MAX_FLOOR_SIZE + 1];
 static int floorX, floorY;
 static Floor currFloor;
 
