@@ -53,4 +53,9 @@ void setAdjRoom(Room r1, Room r2, int doorNum);
 int getRoomH(Room room);
 int getRoomW(Room room);
 
+//////////////////////// MAP ////////////////////////
+
+bool isVisited(int floorX, int floorY);
+void visitMap(int floorX, int floorY);
+
 #endif // FLOOR_GEN_H

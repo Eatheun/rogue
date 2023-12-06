@@ -70,5 +70,6 @@ bool changeRoom(void) {
 		setFloorX(_floorX + 1);
 	}
 	
+	visitMap(_floorX, _floorY);
 	return true;
 }

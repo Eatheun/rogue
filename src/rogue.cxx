@@ -8,6 +8,7 @@
 #include "npc.h"
 #include "inputs.h"
 #include "lfsr.h"
+#include "minimap.h"
 #include "movements.h"
 #include "playerPos.h"
 
@@ -45,6 +46,8 @@ void printFullMap(void)
 		}
 		putchar('\n');
 	}
+
+	printMinimap();
 }
 
 // We don't want a weird cursor on the screen

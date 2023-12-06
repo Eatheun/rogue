@@ -187,6 +187,14 @@ void generateFloor(void) {
 	int limit = 0;
 	Room seededRoom = generateFloorRec(start, start, floorX, floorY, &limit, MAX_DIRS, 6);
 	setCurrRoom(seededRoom);
+
+	// Clear the map for player exploration
+	for (int i = 0; i < MAX_FLOOR_SIZE; i++) {
+		for (int j = 0; j < MAX_FLOOR_SIZE; j++) {
+			map[i][j] = false;
+		}
+	}
+	map[floorY][floorX] = true;
 }
 
 Room getCurrRoom(void) {
@@ -281,3 +289,13 @@ void setAdjRoom(Room r1, Room r2, int doorNum) {
 int getRoomH(Room room) { return room->roomH; };
 
 int getRoomW(Room room) { return room->roomW; };
+
+//////////////////////// MAP ////////////////////////
+
+bool isVisited(int floorX, int floorY) {
+    return map[floorY][floorX];
+}
+
+void visitMap(int floorX, int floorY) {
+	map[floorY][floorX] = true;
+}

@@ -1,6 +1,6 @@
 CC = clang
 CXXFLAGS = -Wall -Werror -Wvla -g
-FILES = rogue.cxx floorGen.cxx inputs.cxx lfsr.cxx movements.cxx npc.cxx playerPos.cxx
+FILES = rogue.cxx floorGen.cxx inputs.cxx lfsr.cxx minimap.cxx movements.cxx npc.cxx playerPos.cxx
 
 ###############################################################
 
