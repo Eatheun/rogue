@@ -4,25 +4,34 @@
 #include <time.h>
 #include <stdint.h>
 
+#include "inputs.h"
 #include "lfsr.h"
 
 void setSeed(void) {
 	unsigned int id = (unsigned int) time(NULL);
-	seed = (id & 0xff) >> 3; // fancy hashing
-	seed |= seed << 24 | seed << 16 | seed << 8; // whoooa
-	seed ^= id; // whooooooooa
+	seed = id ^ (id << 1); // fancy hashing
+
+	printf("\e[96m<Press any key to start>\e[?25l\e[0m");
+	while (true)
+	{
+		if (getComm() != 0)
+		{
+			rand(_dir);
+			break;
+		}
+	}
 }
 
 int rand(int num) {
-	unsigned int bits = seed;
+	unsigned int bits = 0;
 	
-	bits ^= seed >> 1;
-	bits ^= seed >> 3;
-	bits ^= seed >> 27;
-	bits ^= 1u;
-	bits &= 0xff;
+	bits ^= seed >> 0;
+	bits ^= seed >> 10;
+	bits ^= seed >> 30;
+	bits ^= seed >> 31;
+	bits &= 1u;
 	
-	seed ^= bits << 24 | bits << 16 | bits << 8 | bits;
+	seed = (seed >> 1) | (bits << 31);
 	
 	return seed % num;
 }

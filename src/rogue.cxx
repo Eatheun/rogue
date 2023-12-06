@@ -67,31 +67,12 @@ void reenableCursor(void) {
 	printf("\e[1;1H\e[?25h");
 }
 
-//////////////////////////////// Seed Functions ////////////////////////////////
-
-void playerSetSeed(void)
-{
-	setSeed(); // Random!!!
-	clear();
-	printf("<Press any three keys to start>\n");
-	for (int i = 0; i < 3; i++)
-	{
-		while (true)
-		{
-			if (getComm() != 0)
-			{
-				rand(_dir);
-				break;
-			}
-		}
-	}
-}
-
 //////////////////////////////////////// MAIN ////////////////////////////////////////
 
 int main(int argc, char **argv)
 {
-	playerSetSeed();
+	clear();
+	setSeed();
 	clear(); // Clear and start
 	
 	generateFloor();
