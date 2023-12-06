@@ -30,13 +30,13 @@ struct room {
 
 //////////////////////// ENEMY ////////////////////////
 
-static void genEnemies(Room room) {
+static void genNPCs(Room room) {
 	int numNPC = rand(MAX_NPCS);
 	room->numNPCs = numNPC;
 	currFloor->totalEns += numNPC;
 	for (int i = 0; i < numNPC; i++) {
 		// Make enemy and randomise their coordinates
-		NPC newNpc = NPCNew(SKELETON); // add more floors and difficulties
+		NPC newNpc = NPCNew(rand(NUM_NPC_TYPES));
 		setNpcCoor(newNpc, rand(room->roomW - 2) + 1, rand(room->roomH - 2) + 1);
 		room->ens[i] = newNpc;
 	}
@@ -52,7 +52,7 @@ int isNPC(int x, int y) {
 		}
 	}
 	
-	return 0;
+	return NUM_NPC_TYPES;
 }
 
 //////////////////////// FLOORS ////////////////////////
@@ -125,7 +125,7 @@ static Room generateFloorRec(Room newRoom, Room prevRoom, int prevX, int prevY, 
 	}
 	
 	// Generate enemies for the room
-	genEnemies(newRoom);
+	genNPCs(newRoom);
 	
 	for (int i = 0; i < 10; i++) {
 		// Randomise the chances a bit and get next room directions

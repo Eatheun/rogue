@@ -32,20 +32,10 @@ void printFullMap(void)
 			{
 				printf(WALL);
 			}
-			else if (isNPC(j, i) != 0)
+			else if (isNPC(j, i) != NUM_NPC_TYPES)
 			{
 				int ret = isNPC(j, i);
-				if (ret == SKELETON) {
-					printf(SKELETON_CELL);
-				} else if (ret == GOBLIN) {
-					printf(GOBLIN_CELL);
-				} else if (ret == OGRE) {
-					printf(OGRE_CELL);
-				} else if (ret == DRAGON) {
-					printf(DRAGON_CELL);
-				} else {
-					printf(FLOOR);
-				}
+				printf("%s", npcCells[ret]);
 			}
 			else
 			{
