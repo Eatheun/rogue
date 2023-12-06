@@ -11,12 +11,13 @@ void setSeed(void) {
 	unsigned int id = (unsigned int) time(NULL);
 	seed = id ^ (id << 1); // fancy hashing
 
-	printf("\e[96m<Press any key to start>\e[?25l\e[0m");
-	while (true)
-	{
-		if (getComm() != 0)
-		{
-			rand(_dir);
+	printf("\e[1;4;96m<Press any key to start>\e[?25l\e[0m");
+	while (true) {
+		if (getComm() != 0) {
+			int val = _dir ^ (seed & 0xff);
+			int ret = rand(_dir) % 256;
+			unsigned bits = ret | (ret << 8) | (ret << 16) | (ret << 24);
+			seed ^= ret;
 			break;
 		}
 	}
