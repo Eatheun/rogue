@@ -4,6 +4,7 @@
 #define MAX_ROOMS 9
 #define MAX_RADIUS MAX_ROOMS / 2
 #define MAX_FLOOR_SIZE 2 * MAX_RADIUS + 1
+#define MAX_CORR_SIZE 2 * MAX_FLOOR_SIZE + 1
 #define MIN_SIZE 17
 #define MAX_SIZE 31
 
@@ -19,7 +20,7 @@ typedef struct floor *Floor;
 typedef struct room *Room;
 
 static bool map[MAX_FLOOR_SIZE][MAX_FLOOR_SIZE];
-static bool corridors[2 * MAX_FLOOR_SIZE + 1][2 * MAX_FLOOR_SIZE + 1];
+static bool corridors[MAX_CORR_SIZE][MAX_CORR_SIZE];
 static int floorX, floorY;
 static Floor currFloor;
 

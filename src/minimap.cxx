@@ -6,13 +6,13 @@
 #include "minimap.h"
 
 static void printBorder(void) {
-    for (int i = 0; i < MAX_FLOOR_SIZE + 2; i++) {
+    for (int i = 0; i < MAX_CORR_SIZE + 2; i++) {
         printf(MINM_BORDER);
     }
 }
 
 static void moveDown(void) {
-    printf("\e[1B\e[%dD", MAX_FLOOR_SIZE + 2);
+    printf("\e[1B\e[%dD", MAX_CORR_SIZE + 2);
 }
 
 void printMinimap(void) {
@@ -24,11 +24,20 @@ void printMinimap(void) {
     moveDown();
 
     // Map body
-    for (int i = 0; i < MAX_FLOOR_SIZE; i++) {
+    for (int i = 0; i < MAX_CORR_SIZE; i++) {
         printf(MINM_BORDER);
-        for (int j = 0; j < MAX_FLOOR_SIZE; j++) {
-            if (isVisited(j, i)) {
-                printf(MINM_ROOM);
+        for (int j = 0; j < MAX_CORR_SIZE; j++) {
+            int xChk = j - 1;
+            int yChk = i - 1;
+            int corrX = xChk >> 1;
+            int corrY = yChk >> 1;
+            if (xChk % 2 == 0 && yChk % 2 == 0 && 
+                isVisited(corrX, corrY)) {
+                if (corrX == _floorX && corrY == _floorY) {
+                    printf(MINM_CURR_ROOM);
+                } else {
+                    printf(MINM_ROOM);
+                }
                 printf(BLKBCK); // gotta reset
             } else {
                 printf(MINM_EMPTY);
