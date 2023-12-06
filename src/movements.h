@@ -5,5 +5,6 @@
 #define ISWALL(x, y) (x == 0 || x == _currRoomW - 1 || y == 0 || y == _currRoomH - 1)
 
 bool move(void);
+bool changeRoom(void);
 
 #endif // MOVEMENTS_H

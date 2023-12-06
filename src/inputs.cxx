@@ -55,8 +55,8 @@ int handleArrows(int *tx, int *ty) {
 }
 
 int handleAllDir(int *tx, int *ty) {
-    int ret;
-    if ((ret = handleWASD(tx, ty)) == MAX_DIRS) {
+    int ret = handleWASD(tx, ty);
+    if (ret == MAX_DIRS) {
         ret = handleArrows(tx, ty);
     }
 

@@ -8,7 +8,6 @@
 #include "inputs.h"
 #include "lfsr.h"
 #include "npc.h"
-#include "playerPos.h"
 
 struct floor {
 	Room currRoom;
@@ -177,49 +176,6 @@ void generateFloor(void) {
 	int limit = 0;
 	Room seededRoom = generateFloorRec(start, start, floorX, floorY, &limit, MAX_DIRS, 6);
 	setCurrRoom(seededRoom);
-}
-
-bool changeRoom(void) {
-	// Simplify the direction
-	int tempTx = _px;
-	int tempTy = _py;
-	int dirHandled = handleAllDir(&tempTx, &tempTy);
-	if (dirHandled == MAX_DIRS) {
-		return false;
-	}
-	
-	// Find and set new room
-	Room newRoom;
-	if ((_py == 0 && dirHandled == UP) ||
-		(_px == 0 && dirHandled == LEFT) ||
-		(_py == _currRoomH - 1 && dirHandled == DOWN) ||
-		(_px == _currRoomW - 1 && dirHandled == RIGHT)) {
-		newRoom = getAdjRoom(_currRoom, dirHandled);
-	} else {
-		return false;
-	}
-	setCurrRoom(newRoom);
-	
-	// Set player position
-	if (dirHandled == UP) {
-		setPx(_currRoomW / 2);
-		setPy(_currRoomH - 1);
-		floorY--;
-	} else if (dirHandled == LEFT) {
-		setPx(_currRoomW - 1);
-		setPy(_currRoomH / 2);
-		floorX--;
-	} else if (dirHandled == DOWN) {
-		setPx(_currRoomW / 2);
-		setPy(0);
-		floorY++;
-	} else if (dirHandled == RIGHT) {
-		setPx(0);
-		setPy(_currRoomH / 2);
-		floorX++;
-	}
-	
-	return true;
 }
 
 Room getCurrRoom(void) {
