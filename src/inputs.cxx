@@ -33,21 +33,21 @@ int handleArrows(int *tx, int *ty) {
     if (_dir == 0x1b) {
         getComm();
         getComm();
-    } else if (_dir == 0x5b) {
+    } else if (_dir == 0x5b || _dir == 0xe0) {
         getComm();
     }
     
     // Process
-    if (_dir == UP_ARROW) {
+    if (_dir == UP_ARROW_TAB || _dir == UP_ARROW) {
         (*ty)--;
         return UP;
-    } else if (_dir == LEFT_ARROW) {
+    } else if (_dir == LEFT_ARROW_TAB || _dir == LEFT_ARROW) {
         (*tx)--;
         return LEFT;
-    } else if (_dir == DOWN_ARROW) {
+    } else if (_dir == DOWN_ARROW_TAB || _dir == DOWN_ARROW) {
         (*ty)++;
         return DOWN;
-    } else if (_dir == RIGHT_ARROW) {
+    } else if (_dir == RIGHT_ARROW_TAB || _dir == RIGHT_ARROW) {
         (*tx)++;
         return RIGHT;
     }
