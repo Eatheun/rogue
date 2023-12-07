@@ -27,14 +27,14 @@ struct room {
 	NPC npcs[MAX_NPCS];
 };
 
-//////////////////////// ENEMY ////////////////////////
+//////////////////////// NPC ////////////////////////
 
 static void genNPCs(Room room) {
 	int numNPC = rand(MAX_NPCS);
 	room->numNPCs = numNPC;
 	currFloor->totalNpcs += numNPC;
 	for (int i = 0; i < numNPC; i++) {
-		// Make enemy and randomise their coordinates
+		// Make npcs and randomise their coordinates
 		NPC newNpc = NPCNew(rand(NUM_NPC_TYPES));
 		setNpcCoor(newNpc, rand(room->roomW - 2) + 1, rand(room->roomH - 2) + 1);
 		room->npcs[i] = newNpc;
@@ -187,6 +187,18 @@ void generateFloor(void) {
 	int limit = 0;
 	Room seededRoom = generateFloorRec(start, start, floorX, floorY, &limit, MAX_DIRS, 6);
 	setCurrRoom(seededRoom);
+
+	// Clear the map for player exploration
+	for (int i = 0; i < MAX_FLOOR_SIZE; i++) {
+		for (int j = 0; j < MAX_FLOOR_SIZE; j++) {
+			map[i][j] = false;
+		}
+	}
+	map[floorY][floorX] = true;
+
+	// Set the offset
+	offMX = (MAX_SIZE - _currRoomW) / 2;
+	offMY = (MAX_SIZE - _currRoomH) / 2;
 }
 
 Room getCurrRoom(void) {
@@ -198,6 +210,13 @@ void setCurrRoom(Room newRoom) {
     setCurrRoomH(newRoom->roomH);
     setCurrRoomW(newRoom->roomW);
 }
+
+//////////////////////// OFFSET ////////////////////////
+
+int getOffMX(void) { return offMX; }
+void setOffMX(int offx) { offMX = offx; }
+int getOffMY(void) { return offMY; }
+void setOffMY(int offy) { offMY = offy; }
 
 //////////////////////// ROOMS ////////////////////////
 
@@ -281,3 +300,21 @@ void setAdjRoom(Room r1, Room r2, int doorNum) {
 int getRoomH(Room room) { return room->roomH; };
 
 int getRoomW(Room room) { return room->roomW; };
+
+//////////////////////// MAP ////////////////////////
+
+bool isVisited(int floorX, int floorY) {
+    return map[floorY][floorX];
+}
+
+void visitMap(int floorX, int floorY) {
+	map[floorY][floorX] = true;
+}
+
+bool isCorrXplrd(int corrX, int corrY) {
+	return corridors[corrY][corrX];
+}
+
+void xplrCorr(int corrX, int corrY) {
+	corridors[corrY][corrX] = true;
+}

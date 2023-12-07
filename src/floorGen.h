@@ -4,8 +4,9 @@
 #define MAX_ROOMS 9
 #define MAX_RADIUS MAX_ROOMS / 2
 #define MAX_FLOOR_SIZE 2 * MAX_RADIUS + 1
-#define MIN_SIZE 17
-#define MAX_SIZE 31
+#define MAX_CORR_SIZE 2 * MAX_FLOOR_SIZE + 1
+#define MIN_SIZE 13
+#define MAX_SIZE 19
 
 #define MAX(a, b) a > b ? a : b
 #define MIN(a, b) a < b ? a : b
@@ -14,15 +15,19 @@
 #define _currRoom getCurrRoom()
 #define _currRoomH getCurrRoomH()
 #define _currRoomW getCurrRoomW()
+#define _offMX getOffMX()
+#define _offMY getOffMY()
 
 typedef struct floor *Floor;
 typedef struct room *Room;
 
 static bool map[MAX_FLOOR_SIZE][MAX_FLOOR_SIZE];
+static bool corridors[MAX_CORR_SIZE][MAX_CORR_SIZE];
 static int floorX, floorY;
+static int offMX, offMY;
 static Floor currFloor;
 
-//////////////////////// FLOORS ////////////////////////
+//////////////////////// NPC ////////////////////////
 
 int isNPC(int x, int y);
 
@@ -42,6 +47,13 @@ void generateFloor(void);
 Room getCurrRoom(void);
 void setCurrRoom(Room newRoom);
 
+//////////////////////// OFFSET ////////////////////////
+
+int getOffMX(void);
+void setOffMX(int offx);
+int getOffMY(void);
+void setOffMY(int offy);
+
 //////////////////////// ROOMS ////////////////////////
 
 Room RoomNew(void);
@@ -52,5 +64,12 @@ Room getAdjRoom(Room newRoom, int doorNum);
 void setAdjRoom(Room r1, Room r2, int doorNum);
 int getRoomH(Room room);
 int getRoomW(Room room);
+
+//////////////////////// MAP ////////////////////////
+
+bool isVisited(int floorX, int floorY);
+void visitMap(int floorX, int floorY);
+bool isCorrXplrd(int corrX, int corrY);
+void xplrCorr(int corrX, int corrY);
 
 #endif // FLOOR_GEN_H
