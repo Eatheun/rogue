@@ -11,6 +11,30 @@ static void setStdClr(void) {
     printf(WHTXT);
 }
 
+static void handlePrintBlock(int i, int j, bool isOpenMap) {
+    int xChk = j - 1;
+    int yChk = i - 1;
+    int corrX = xChk >> 1;
+    int corrY = yChk >> 1;
+    if (xChk % 2 == 0 && yChk % 2 == 0 && 
+        isVisited(corrX, corrY)) {
+        if (corrX == _floorX && corrY == _floorY) {
+            printf(isOpenMap ? OPNM_CURR_ROOM : MINM_CURR_ROOM);
+        } else {
+            printf(isOpenMap ? OPNM_ROOM : MINM_ROOM);
+        }
+    } else if (isCorrXplrd(xChk + 1, yChk + 1)) {
+        if (xChk % 2 == 1 && yChk % 2 == 0) {
+            printf(isOpenMap ? OPNM_HCORR : MINM_HCORR);
+        } else {
+            printf(isOpenMap ? OPNM_VCORR : MINM_VCORR);
+        }
+
+    } else {
+        printf(isOpenMap ? OPNM_EMPTY : MINM_EMPTY);
+    }
+}
+
 //////////////////////// MINI ////////////////////////
 
 static void printBorder(void) {
@@ -35,27 +59,7 @@ void printMinimap(void) {
     for (int i = 0; i < MAX_CORR_SIZE; i++) {
         printf(MINM_BORDER);
         for (int j = 0; j < MAX_CORR_SIZE; j++) {
-            int xChk = j - 1;
-            int yChk = i - 1;
-            int corrX = xChk >> 1;
-            int corrY = yChk >> 1;
-            if (xChk % 2 == 0 && yChk % 2 == 0 && 
-                isVisited(corrX, corrY)) {
-                if (corrX == _floorX && corrY == _floorY) {
-                    printf(MINM_CURR_ROOM);
-                } else {
-                    printf(MINM_ROOM);
-                }
-            } else if (isCorrXplrd(xChk + 1, yChk + 1)) {
-                if (xChk % 2 == 1 && yChk % 2 == 0) {
-                    printf(MINM_HCORR);
-                } else {
-                    printf(MINM_VCORR);
-                }
-
-            } else {
-                printf(MINM_EMPTY);
-            }
+            handlePrintBlock(i, j, false);
 
             setStdClr(); // gotta reset
         }
@@ -121,32 +125,9 @@ static void printOpenMap(void) {
         printf(OPNM_BORDER);
         printf("\e[1A");
         for (int j = 0; j < MAX_CORR_SIZE; j++) {
-            int xChk = j - 1;
-            int yChk = i - 1;
-            int corrX = xChk >> 1;
-            int corrY = yChk >> 1;
-            if (xChk % 2 == 0 && yChk % 2 == 0 && 
-                isVisited(corrX, corrY)) {
-                if (corrX == _floorX && corrY == _floorY) {
-                    printf(OPNM_CURR_ROOM);
-                    printf("\e[1A");
-                } else {
-                    printf(OPNM_ROOM);
-                    printf("\e[1A");
-                }
-            } else if (isCorrXplrd(xChk + 1, yChk + 1)) {
-                if (xChk % 2 == 1 && yChk % 2 == 0) {
-                    printf(OPNM_HCORR);
-                    printf("\e[1A");
-                } else {
-                    printf(OPNM_VCORR);
-                    printf("\e[1A");
-                }
-            } else {
-                printf(OPNM_EMPTY);
-                printf("\e[1A");
-            }
+            handlePrintBlock(i, j, true);
 
+            printf("\e[1A");
             setStdClr(); // gotta reset
         }
         printf(OPNM_BORDER);
