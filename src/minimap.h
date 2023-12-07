@@ -11,5 +11,7 @@
 #define MINM_VCORR "|"
 
 void printMinimap(void);
+void remPrevRoomMinM(int prevFx, int prevFy);
+void updateMinM(int newFx, int newFy, int corrX, int corrY, bool isHCorrUpdate);
 
 #endif // MINIMAP_H

@@ -4,6 +4,7 @@
 #include "directions.h"
 #include "floorGen.h"
 #include "inputs.h"
+#include "minimap.h"
 #include "movements.h"
 #include "playerPos.h"
 
@@ -63,7 +64,7 @@ bool changeRoom(void) {
 		return false;
 	}
 	
-	// Find and set new room
+	// Find new room
 	Room newRoom;
 	if ((_py == 0 && dirHandled == UP) ||
 		(_px == 0 && dirHandled == LEFT) ||
@@ -73,6 +74,9 @@ bool changeRoom(void) {
 	} else {
 		return false;
 	}
+
+	// Update old room and set new room
+	remPrevRoomMinM(_floorX, _floorY);
 	setCurrRoom(newRoom);
 	
 	// Tracking corridors
@@ -84,7 +88,12 @@ bool changeRoom(void) {
 	setOffMX((MAX_SIZE - _currRoomW) / 2);
 	setOffMY((MAX_SIZE - _currRoomH) / 2);
 
+	bool isHCorrUpdate = false;
+	if (xChk != _floorX * 2 + 1) isHCorrUpdate = true;
+
+	// Update maps and corridors
 	visitMap(_floorX, _floorY);
 	xplrCorr(xChk, yChk);
+	updateMinM(_floorX, _floorY, xChk, yChk, isHCorrUpdate);
 	return true;
 }
