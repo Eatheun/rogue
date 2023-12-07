@@ -86,7 +86,7 @@ bool changeRoom(void) {
 	// Set player position and offset
 	playerPosChange(dirHandled, &xChk, &yChk);
 	setOffMX((MAX_SIZE - _currRoomW) / 2);
-	setOffMY((MAX_SIZE - _currRoomH) / 2);
+	setOffMY((MAX_CORR_SIZE + 2 - _currRoomH) / 2);
 
 	bool isHCorrUpdate = false;
 	if (xChk != _floorX * 2 + 1) isHCorrUpdate = true;

@@ -198,7 +198,7 @@ void generateFloor(void) {
 
 	// Set the offset
 	offMX = (MAX_SIZE - _currRoomW) / 2;
-	offMY = (MAX_SIZE - _currRoomH) / 2;
+	offMY = (MAX_CORR_SIZE + 2 - _currRoomH) / 2;
 }
 
 Room getCurrRoom(void) {

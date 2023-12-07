@@ -97,12 +97,71 @@ void updateMinM(int newFx, int newFy, int corrX, int corrY, bool isHCorrUpdate) 
 
 //////////////////////// OPEN ////////////////////////
 
+static void printOpenBorder(void) {
+    for (int i = 0; i < MAX_CORR_SIZE + 2; i++) {
+        printf(OPNM_BORDER);
+        printf("\e[1A");
+    }
+}
+
+static void moveOpenDown(void) {
+    printf("\e[2E");
+}
+
 static void printOpenMap(void) {
-    printf("Open map mode");
+    printf("\e[2J\e[1;1H"); // Clear and go to start
+    setStdClr();
+
+    // Top border
+    printOpenBorder();
+    printf("\e[2E");
+
+    // Map body
+    for (int i = 0; i < MAX_CORR_SIZE; i++) {
+        printf(OPNM_BORDER);
+        printf("\e[1A");
+        for (int j = 0; j < MAX_CORR_SIZE; j++) {
+            int xChk = j - 1;
+            int yChk = i - 1;
+            int corrX = xChk >> 1;
+            int corrY = yChk >> 1;
+            if (xChk % 2 == 0 && yChk % 2 == 0 && 
+                isVisited(corrX, corrY)) {
+                if (corrX == _floorX && corrY == _floorY) {
+                    printf(OPNM_CURR_ROOM);
+                    printf("\e[1A");
+                } else {
+                    printf(OPNM_ROOM);
+                    printf("\e[1A");
+                }
+            } else if (isCorrXplrd(xChk + 1, yChk + 1)) {
+                if (xChk % 2 == 1 && yChk % 2 == 0) {
+                    printf(OPNM_HCORR);
+                    printf("\e[1A");
+                } else {
+                    printf(OPNM_VCORR);
+                    printf("\e[1A");
+                }
+            } else {
+                printf(OPNM_EMPTY);
+                printf("\e[1A");
+            }
+
+            setStdClr(); // gotta reset
+        }
+        printf(OPNM_BORDER);
+        printf("\e[1E");
+    }
+
+    // Bottom border
+    printOpenBorder();
+    printf("\e[1E");
+
+    printf("\e[0m");
 }
 
 static void closeMap(void) {
-    printf("\e[13D\e[0K");
+    printf("\e[2J\e[1;1H"); // basically clears
 }
 
 bool openMapMode(void) {

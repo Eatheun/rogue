@@ -19,7 +19,7 @@ void clear(void) {
 }
 
 void printFullMap(void) {
-	printf("\e[%d;%dH", _offMY, _offMX * 2); // Center the map
+	printf("\e[%d;%dH", _offMY + 1, _offMX * 2 + 1); // Center the map
 
 	for (int i = 0; i < _currRoomH; i++) {
 		for (int j = 0; j < _currRoomW; j++) {
@@ -40,13 +40,11 @@ void printFullMap(void) {
 		}
 		printf("\e[1B\e[%dD", _currRoomW * 2); // go down one line
 	}
-
-	// printMinimap();
 }
 
 void clearFullMap(void) {
 	printf("\e[1;%dH", MAX_SIZE * 2 + 1); // go to start of deletion
-	for (int i = 0; i < MAX_SIZE; i++) {
+	for (int i = 0; i < MAX_SIZE + 1; i++) {
 		printf("\e[1K"); // clear map line
 		printf("\e[1B"); // go down
 	}
@@ -64,7 +62,7 @@ void reenableCursor(void) {
 //////////////////////////////////////// MAIN ////////////////////////////////////////
 
 int main(int argc, char **argv) {
-	clear();
+	clear(); // Begin the sequence
 	setSeed();
 	clear(); // Clear and start
 	
@@ -88,7 +86,9 @@ int main(int argc, char **argv) {
 				clearFullMap();
 				printFullMap();
 			} else if (openMapMode()) {
-
+				// Should have closed map 
+				printFullMap();
+				printMinimap();
 			}
 			removeCursor();
 		}
