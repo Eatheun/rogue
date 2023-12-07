@@ -54,7 +54,7 @@ void clearFullMap(void) {
 
 // We don't want a weird cursor on the screen
 void removeCursor(void) {
-	printf("\e[%d;1H\e[?25l", _currRoomH + 1); // Position cursor at the bottom and hide it
+	printf("\e[%d;1H\e[?25l", MAX_CORR_SIZE + 3); // Position cursor at the bottom and hide it
 }
 
 void reenableCursor(void) {
@@ -82,11 +82,13 @@ int main(int argc, char **argv) {
 			// Check if we're quitting
 			if (_dir == 'q') break;
 
-			if (!move()) {
-				if (changeRoom()) {
-					clearFullMap();
-					printFullMap();
-				}
+			if (move()) {
+
+			} else if (changeRoom()) {
+				clearFullMap();
+				printFullMap();
+			} else if (openMapMode()) {
+
 			}
 			removeCursor();
 		}

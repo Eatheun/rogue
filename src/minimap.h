@@ -10,8 +10,14 @@
 #define MINM_HCORR "-"
 #define MINM_VCORR "|"
 
+//////////////////////// MINI ////////////////////////
+
 void printMinimap(void);
 void remPrevRoomMinM(int prevFx, int prevFy);
 void updateMinM(int newFx, int newFy, int corrX, int corrY, bool isHCorrUpdate);
+
+//////////////////////// OPEN ////////////////////////
+
+bool openMapMode(void);
 
 #endif // MINIMAP_H

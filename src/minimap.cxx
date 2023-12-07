@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "inputs.h"
 #include "floorGen.h"
 #include "minimap.h"
 
@@ -9,6 +10,8 @@ static void setStdClr(void) {
     printf(BLKBCK);
     printf(WHTXT);
 }
+
+//////////////////////// MINI ////////////////////////
 
 static void printBorder(void) {
     for (int i = 0; i < MAX_CORR_SIZE + 2; i++) {
@@ -90,4 +93,31 @@ void updateMinM(int newFx, int newFy, int corrX, int corrY, bool isHCorrUpdate) 
         printf(MINM_VCORR);
     }
     printf("\e[0m");
+}
+
+//////////////////////// OPEN ////////////////////////
+
+static void printOpenMap(void) {
+    printf("Open map mode");
+}
+
+static void closeMap(void) {
+    printf("\e[13D\e[0K");
+}
+
+bool openMapMode(void) {
+    if (_dir == 'm') {
+        printOpenMap();
+    } else {
+        return false;
+    }
+
+    while (true) {
+        if (getComm() == 'm') {
+            closeMap();
+            break;
+        }
+    }
+
+    return true;
 }
