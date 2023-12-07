@@ -79,9 +79,11 @@ bool changeRoom(void) {
 	int xChk = _floorX * 2 + 1;
 	int yChk = _floorY * 2 + 1;
 
-	// Set player position
+	// Set player position and offset
 	playerPosChange(dirHandled, &xChk, &yChk);
-	
+	setOffMX((MAX_SIZE - _currRoomW) / 2);
+	setOffMY((MAX_SIZE - _currRoomH) / 2);
+
 	visitMap(_floorX, _floorY);
 	xplrCorr(xChk, yChk);
 	return true;

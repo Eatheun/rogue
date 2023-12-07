@@ -21,7 +21,7 @@ static void moveDown(void) {
 }
 
 void printMinimap(void) {
-    printf("\e[1;%dH", (_currRoomW + 1) * 2); // Go to first line
+    printf("\e[1;%dH", (MAX_SIZE + 1) * 2); // Go to first line
     setStdClr();
 
     // Top border

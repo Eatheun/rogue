@@ -15,6 +15,8 @@
 #define _currRoom getCurrRoom()
 #define _currRoomH getCurrRoomH()
 #define _currRoomW getCurrRoomW()
+#define _offMX getOffMX()
+#define _offMY getOffMY()
 
 typedef struct floor *Floor;
 typedef struct room *Room;
@@ -22,9 +24,10 @@ typedef struct room *Room;
 static bool map[MAX_FLOOR_SIZE][MAX_FLOOR_SIZE];
 static bool corridors[MAX_CORR_SIZE][MAX_CORR_SIZE];
 static int floorX, floorY;
+static int offMX, offMY;
 static Floor currFloor;
 
-//////////////////////// FLOORS ////////////////////////
+//////////////////////// NPC ////////////////////////
 
 int isNPC(int x, int y);
 
@@ -43,6 +46,13 @@ void FloorClear(void);
 void generateFloor(void);
 Room getCurrRoom(void);
 void setCurrRoom(Room newRoom);
+
+//////////////////////// OFFSET ////////////////////////
+
+int getOffMX(void);
+void setOffMX(int offx);
+int getOffMY(void);
+void setOffMY(int offy);
 
 //////////////////////// ROOMS ////////////////////////
 

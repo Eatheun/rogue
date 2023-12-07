@@ -27,14 +27,14 @@ struct room {
 	NPC npcs[MAX_NPCS];
 };
 
-//////////////////////// ENEMY ////////////////////////
+//////////////////////// NPC ////////////////////////
 
 static void genNPCs(Room room) {
 	int numNPC = rand(MAX_NPCS);
 	room->numNPCs = numNPC;
 	currFloor->totalNpcs += numNPC;
 	for (int i = 0; i < numNPC; i++) {
-		// Make enemy and randomise their coordinates
+		// Make npcs and randomise their coordinates
 		NPC newNpc = NPCNew(rand(NUM_NPC_TYPES));
 		setNpcCoor(newNpc, rand(room->roomW - 2) + 1, rand(room->roomH - 2) + 1);
 		room->npcs[i] = newNpc;
@@ -195,6 +195,10 @@ void generateFloor(void) {
 		}
 	}
 	map[floorY][floorX] = true;
+
+	// Set the offset
+	offMX = (MAX_SIZE - _currRoomW) / 2;
+	offMY = (MAX_SIZE - _currRoomH) / 2;
 }
 
 Room getCurrRoom(void) {
@@ -206,6 +210,13 @@ void setCurrRoom(Room newRoom) {
     setCurrRoomH(newRoom->roomH);
     setCurrRoomW(newRoom->roomW);
 }
+
+//////////////////////// OFFSET ////////////////////////
+
+int getOffMX(void) { return offMX; }
+void setOffMX(int offx) { offMX = offx; }
+int getOffMY(void) { return offMY; }
+void setOffMY(int offy) { offMY = offy; }
 
 //////////////////////// ROOMS ////////////////////////
 

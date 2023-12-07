@@ -14,45 +14,46 @@
 
 //////////////////////////////// ANSI Functions ////////////////////////////////
 
-void clear(void)
-{
+void clear(void) {
 	printf("\e[2J\n\e[1;1H");
 }
 
-void printFullMap(void)
-{
-	for (int i = 0; i < _currRoomH; i++)
-	{
-		for (int j = 0; j < _currRoomW; j++)
-		{
-			if (ISPLAYER(j, i))
-			{
+void printFullMap(void) {
+	printf("\e[%d;%dH", _offMY, _offMX * 2); // Center the map
+
+	for (int i = 0; i < _currRoomH; i++) {
+		for (int j = 0; j < _currRoomW; j++) {
+			if (ISPLAYER(j, i)) {
 				printf(PLAYER);
 			}
-			else if (ISWALL(j, i) && !isDoor(j, i))
-			{
+			else if (ISWALL(j, i) && !isDoor(j, i)) {
 				printf(WALL);
 			}
-			else if (isNPC(j, i) != NUM_NPC_TYPES)
-			{
+			else if (isNPC(j, i) != NUM_NPC_TYPES) {
 				int ret = isNPC(j, i);
 				printf("%s", npcCells[ret]);
 			}
-			else
-			{
+			else {
 				printf(FLOOR);
 			}
 			printf("\e[0m"); // reset colour
 		}
-		putchar('\n');
+		printf("\e[1B\e[%dD", _currRoomW * 2); // go down one line
 	}
 
-	printMinimap();
+	// printMinimap();
+}
+
+void clearFullMap(void) {
+	printf("\e[1;%dH", MAX_SIZE * 2 + 1); // go to start of deletion
+	for (int i = 0; i < MAX_SIZE; i++) {
+		printf("\e[1K"); // clear map line
+		printf("\e[1B"); // go down
+	}
 }
 
 // We don't want a weird cursor on the screen
-void removeCursor(void)
-{
+void removeCursor(void) {
 	printf("\e[%d;1H\e[?25l", _currRoomH + 1); // Position cursor at the bottom and hide it
 }
 
@@ -62,8 +63,7 @@ void reenableCursor(void) {
 
 //////////////////////////////////////// MAIN ////////////////////////////////////////
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
 	clear();
 	setSeed();
 	clear(); // Clear and start
@@ -74,6 +74,7 @@ int main(int argc, char **argv)
 	setPy(_currRoomH / 2);
 
 	printFullMap();
+	printMinimap();
 	removeCursor();
 
 	while (true) {
@@ -83,7 +84,7 @@ int main(int argc, char **argv)
 
 			if (!move()) {
 				if (changeRoom()) {
-					clear();
+					clearFullMap();
 					printFullMap();
 				}
 			}
