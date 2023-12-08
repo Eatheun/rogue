@@ -106,9 +106,6 @@ static void printOpenBorder(void) {
         printf(OPNM_BORDER);
         printf("\e[1A");
     }
-}
-
-static void moveOpenDown(void) {
     printf("\e[2E");
 }
 
@@ -118,7 +115,6 @@ static void printOpenMap(void) {
 
     // Top border
     printOpenBorder();
-    printf("\e[2E");
 
     // Map body
     for (int i = 0; i < MAX_CORR_SIZE; i++) {
@@ -136,7 +132,6 @@ static void printOpenMap(void) {
 
     // Bottom border
     printOpenBorder();
-    printf("\e[1E");
 
     printf("\e[0m");
 }
