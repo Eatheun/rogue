@@ -18,28 +18,83 @@ void clear(void) {
 	printf("\e[2J\n\e[1;1H");
 }
 
+void putBlock(void) {
+	putchar(EMPTY); putchar(EMPTY);
+}
+
 void printFullMap(void) {
 	printf("\e[%d;%dH", _offMY + 1, _offMX * 2 + 1); // Center the map
 
-	for (int i = 0; i < _currRoomH; i++) {
-		for (int j = 0; j < _currRoomW; j++) {
-			if (ISPLAYER(j, i)) {
-				printf(PLAYER);
-			}
-			else if (ISWALL(j, i) && !isDoor(j, i)) {
-				printf(WALL);
-			}
-			else if (isNPC(j, i) != NUM_NPC_TYPES) {
+	// Print walls
+	printf(CYABCK);
+	for (int i = 0; i < _currRoomW; i++) { // Top
+		if (isDoor(i, 0)) {
+			printf(DRKBLUBCK);
+			putBlock();
+			printf(CYABCK);
+		} else {
+			putBlock();
+		}
+	}
+
+	printf("\e[1B\e[2D");
+	for (int i = 1; i < _currRoomH; i++) { // Right
+		if (isDoor(_currRoomW - 1, i)) {
+			printf(DRKBLUBCK);
+			putBlock();
+			printf(CYABCK);
+		} else {
+			putBlock();
+		}
+		printf("\e[1B\e[2D");
+	}
+
+	printf("\e[1A\e[2D");
+	for (int i = 1; i < _currRoomW; i++) { // Bottom
+		if (isDoor(i, _currRoomH - 1)) {
+			printf(DRKBLUBCK);
+			putBlock();
+			printf(CYABCK);
+		} else {
+			putBlock();
+		}
+		printf("\e[4D");
+	}
+
+	printf("\e[1A");
+	if (_currRoomW != MAX_SIZE) printf("\e[2C"); // edge of the map
+	for (int i = 1; i < _currRoomH - 1; i++) { // Left
+		if (isDoor(0, i)) {
+			printf(DRKBLUBCK);
+			putBlock();
+			printf(CYABCK);
+		} else {
+			putBlock();
+		}
+		printf("\e[1A\e[2D");
+	}
+
+	// Print inside
+	printf("\e[1B\e[2C");
+	printf(DRKBLUBCK);
+	for (int i = 1; i < _currRoomH - 1; i++) {
+		for (int j = 1; j < _currRoomW - 1; j++) {
+			if (isNPC(j, i) != NUM_NPC_TYPES) {
 				int ret = isNPC(j, i);
 				printf("%s", npcCells[ret]);
+				printf(DRKBLUBCK);
+			} else {
+				putBlock();
 			}
-			else {
-				printf(FLOOR);
-			}
-			printf("\e[0m"); // reset colour
 		}
-		printf("\e[1B\e[%dD", _currRoomW * 2); // go down one line
+		printf("\e[1B\e[%dD", 2 * (_currRoomW - 2));
 	}
+
+	// Print player
+	printf("\e[%d;%dH", _offMY+ _py + 1, (_offMX + _px) * 2 + 1);
+	printf(PLAYER);
+
+	printf("\e[0m");
 }
 
 void clearFullMap(void) {

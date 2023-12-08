@@ -1,6 +1,10 @@
 #ifndef CELLS_H
 #define CELLS_H
 
+#define CYABCK "\e[48;5;116m"
+#define DRKBLUBCK "\e[48;5;17m"
+#define EMPTY ' '
+
 #define PLAYER "\e[48;5;196m\e[38;5;255mPl"
 #define FLOOR "\e[48;5;17m  "
 #define WALL "\e[48;5;116m  "
