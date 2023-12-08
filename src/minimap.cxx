@@ -5,6 +5,7 @@
 #include "inputs.h"
 #include "floorGen.h"
 #include "minimap.h"
+#include "npc.h"
 
 static void setStdClr(void) {
     printf(BLKBCK);

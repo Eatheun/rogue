@@ -5,8 +5,8 @@
 #define MAX_RADIUS (MAX_ROOMS / 2 - 1)
 #define MAX_FLOOR_SIZE (2 * MAX_RADIUS + 1)
 #define MAX_CORR_SIZE (2 * MAX_FLOOR_SIZE + 1)
-#define MIN_SIZE 13
-#define MAX_SIZE 19
+#define MIN_SIZE 11
+#define MAX_SIZE 17
 
 #define MAX(a, b) a > b ? a : b
 #define MIN(a, b) a < b ? a : b
@@ -29,7 +29,10 @@ static Floor currFloor;
 
 //////////////////////// NPC ////////////////////////
 
+#include "npc.h"
+
 int isNPC(int x, int y);
+NPC *getNpcsInRoom(Room room);
 
 //////////////////////// FLOORS ////////////////////////
 

@@ -54,6 +54,10 @@ int isNPC(int x, int y) {
 	return NUM_NPC_TYPES;
 }
 
+NPC *getNpcsInRoom(Room room) {
+	return room->npcs;
+}
+
 //////////////////////// FLOORS ////////////////////////
 
 int getCurrRoomH(void) { return currFloor->currRoomH; }
