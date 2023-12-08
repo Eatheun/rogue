@@ -11,7 +11,7 @@ static void setStdClr(void) {
     printf(WHTXT);
 }
 
-static void handlePrintBlock(int i, int j, bool isOpenMap) {
+static void handlePrintMapBlock(int i, int j, bool isOpenMap) {
     int xChk = j - 1;
     int yChk = i - 1;
     int corrX = xChk >> 1;
@@ -48,7 +48,7 @@ static void moveDown(void) {
 }
 
 void printMinimap(void) {
-    printf("\e[1;%dH", (MAX_SIZE + 1) * 2); // Go to first line
+    printf("\e[1;%dH", (MAX_SIZE + 1) * 2 + DIST_FROM_MAINM - 1); // Go to first line
     setStdClr();
 
     // Top border
@@ -59,7 +59,7 @@ void printMinimap(void) {
     for (int i = 0; i < MAX_CORR_SIZE; i++) {
         printf(MINM_BORDER);
         for (int j = 0; j < MAX_CORR_SIZE; j++) {
-            handlePrintBlock(i, j, false);
+            handlePrintMapBlock(i, j, false);
 
             setStdClr(); // gotta reset
         }
@@ -75,7 +75,7 @@ void printMinimap(void) {
 }
 
 void remPrevRoomMinM(int prevFx, int prevFy) {
-    printf("\e[%d;%dH", 1 + (prevFy + 1) * 2, (MAX_SIZE + 1) * 2 + 1); // go to prev room y
+    printf("\e[%d;%dH", 1 + (prevFy + 1) * 2, (MAX_SIZE + 1) * 2 + DIST_FROM_MAINM); // go to prev room y
     printf("\e[%dC", 1 + prevFx * 2); // shift across
     printf(MINM_ROOM);
     printf("\e[0m");
@@ -83,13 +83,13 @@ void remPrevRoomMinM(int prevFx, int prevFy) {
 
 void updateMinM(int newFx, int newFy, int corrX, int corrY, bool isHCorrUpdate) {
     // Printing room
-    printf("\e[%d;%dH", 1 + (newFy + 1) * 2, (MAX_SIZE + 1) * 2 + 1); // go to new room y
+    printf("\e[%d;%dH", 1 + (newFy + 1) * 2, (MAX_SIZE + 1) * 2 + DIST_FROM_MAINM); // go to new room y
     printf("\e[%dC", 1 + newFx * 2); // shift across
     printf(MINM_CURR_ROOM);
     setStdClr();
 
     // Printing corridor
-    printf("\e[%d;%dH", 2 + corrY, (MAX_SIZE + 1) * 2 + 1); // go to corr y
+    printf("\e[%d;%dH", 2 + corrY, (MAX_SIZE + 1) * 2 + DIST_FROM_MAINM); // go to corr y
     printf("\e[%dC", corrX); // shift across
     if (isHCorrUpdate) {
         printf(MINM_HCORR);
@@ -121,7 +121,7 @@ static void printOpenMap(void) {
         printf(OPNM_BORDER);
         printf("\e[1A");
         for (int j = 0; j < MAX_CORR_SIZE; j++) {
-            handlePrintBlock(i, j, true);
+            handlePrintMapBlock(i, j, true);
 
             printf("\e[1A");
             setStdClr(); // gotta reset

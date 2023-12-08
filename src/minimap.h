@@ -17,6 +17,8 @@
 #define OPNM_HCORR "--\e[1B\e[2D--"
 #define OPNM_VCORR "||\e[1B\e[2D||"
 
+#define DIST_FROM_MAINM 2
+
 //////////////////////// MINI ////////////////////////
 
 void printMinimap(void);
