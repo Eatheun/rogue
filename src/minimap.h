@@ -17,6 +17,9 @@
 #define OPNM_HCORR "--\e[1B\e[2D--"
 #define OPNM_VCORR "||\e[1B\e[2D||"
 
+#define ESC_OFF 1
+#define BORD_OFF 1
+#define CORR_MULT 2
 #define DIST_FROM_MAINM 2
 
 //////////////////////// MINI ////////////////////////
