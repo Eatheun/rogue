@@ -10,6 +10,18 @@
 #define MINM_HCORR "-"
 #define MINM_VCORR "|"
 
+#define OPNM_BORDER "##\e[1B\e[2D##"
+#define OPNM_EMPTY "  \e[1B\e[2D  "
+#define OPNM_ROOM "\e[48;5;116m  \e[1B\e[2D  "
+#define OPNM_CURR_ROOM "\e[48;2;255;200;16m  \e[1B\e[2D  "
+#define OPNM_HCORR "--\e[1B\e[2D--"
+#define OPNM_VCORR "||\e[1B\e[2D||"
+
+#define ESC_OFF 1
+#define BORD_OFF 1
+#define CORR_MULT 2
+#define DIST_FROM_MAINM 2
+
 //////////////////////// MINI ////////////////////////
 
 void printMinimap(void);
