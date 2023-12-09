@@ -119,7 +119,40 @@ static int handleNpcType(NPC npc) {
 }
 
 static char handleNpcTypeChar(int npcType) {
-    return npcType + 97;
+    char ch = '5';
+    switch (npcType) {
+        case MERCHANT:
+            ch = '$';
+            break;
+        case SMITH:
+            ch = 'S';
+            break;
+        case BARBER:
+            ch = 'B';
+            break;
+        case TAILOR:
+            ch = 'T';
+            break;
+        case ARTIST:
+            ch = 'A';
+            break;
+        case COOK:
+            ch = 'C';
+            break;
+        case COBBLER:
+            ch = 'O';
+            break;
+        case CARTOGRAPHER:
+            ch = '#';
+            break;
+        case SORCERER:
+            ch = 'S';
+            break;
+        default:
+            break;
+    }
+
+    return ch;
 }
 
 static void printNpcRec(Room curr, Room prev, int currFx, int currFy) {

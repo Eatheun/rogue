@@ -23,15 +23,15 @@ enum npcType {
 	NUM_NPC_TYPES
 };
 
-#define MERCHANT_CELL "\e[48;5;88m\e[38;5;231mMe"
-#define SMITH_CELL "\e[48;5;88m\e[38;5;95mSm"
-#define BARBER_CELL "\e[48;5;88m\e[38;5;82mBa"
-#define TAILOR_CELL "\e[48;5;88m\e[38;5;221mTa"
-#define ARTIST_CELL "\e[48;5;88m\e[38;5;231mAr"
-#define COOK_CELL "\e[48;5;88m\e[38;5;231mCk"
-#define COBBLER_CELL "\e[48;5;88m\e[38;5;231mCb"
-#define CARTOGRAPHER_CELL "\e[48;5;88m\e[38;5;231mCa"
-#define SORCERER_CELL "\e[48;5;88m\e[38;5;231mSo"
+#define MERCHANT_CELL "\e[48;2;255;0;0m\e[38;5;231mMe"
+#define SMITH_CELL "\e[48;2;255;0;0m\e[38;5;95mSm"
+#define BARBER_CELL "\e[48;2;255;0;0m\e[38;5;82mBa"
+#define TAILOR_CELL "\e[48;2;255;0;0m\e[38;5;221mTa"
+#define ARTIST_CELL "\e[48;2;255;0;0m\e[38;5;231mAr"
+#define COOK_CELL "\e[48;2;255;0;0m\e[38;5;231mCk"
+#define COBBLER_CELL "\e[48;2;255;0;0m\e[38;5;231mCb"
+#define CARTOGRAPHER_CELL "\e[48;2;255;0;0m\e[38;5;231mCa"
+#define SORCERER_CELL "\e[48;2;255;0;0m\e[38;5;231mSo"
 
 static const char *npcCells[NUM_NPC_TYPES] = {
     MERCHANT_CELL,
