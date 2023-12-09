@@ -92,7 +92,8 @@ void printFullMap(void) {
 
 	// Print player
 	printf("\e[%d;%dH", _offMY+ _py + 1, (_offMX + _px) * 2 + 1);
-	printf(PLAYER);
+	printf(REDBCK); printf(WHTXT);
+	putchar('P'); putchar('l');
 
 	printf("\e[0m");
 }

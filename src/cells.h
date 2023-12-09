@@ -3,6 +3,7 @@
 
 #define CYABCK "\e[48;5;116m"
 #define DRKBLUBCK "\e[48;5;17m"
+#define REDBCK "\e[48;5;196m"
 #define EMPTY ' '
 
 #define PLAYER "\e[48;5;196m\e[38;5;255mPl"
