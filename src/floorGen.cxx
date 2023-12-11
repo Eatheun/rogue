@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "cells.h"
 #include "floorGen.h"
@@ -29,15 +30,82 @@ struct room {
 
 //////////////////////// NPC ////////////////////////
 
-static void genNPCs(Room room) {
-	int numNPC = rand(MAX_NPCS);
-	room->numNPCs = numNPC;
-	currFloor->totalNpcs += numNPC;
-	for (int i = 0; i < numNPC; i++) {
-		// Make npcs and randomise their coordinates
-		NPC newNpc = NPCNew(rand(NUM_NPC_TYPES));
-		setNpcCoor(newNpc, rand(room->roomW - 2) + 1, rand(room->roomH - 2) + 1);
-		room->npcs[i] = newNpc;
+static bool isRoomFull(Room room) {
+	for (int i = 0; i < MAX_NPCS; i++) {
+		if (room->npcs[i] == NULL) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+static Room getRoomFromFloorXY(Room start, int x, int y) {
+	Room curr = start;
+	int xDiff = x - MAX_RADIUS;
+	int yDiff = y - MAX_RADIUS;
+
+	// go across x
+	while (curr != NULL && xDiff > 0) {
+		curr = curr->adj[RIGHT];
+		xDiff--;
+	}
+	while (curr != NULL && xDiff < 0) {
+		curr = curr->adj[LEFT];
+		xDiff++;
+	}
+
+	// go across y
+	while (curr != NULL && yDiff > 0) {
+		curr = curr->adj[DOWN];
+		yDiff--;
+	}
+	while (curr != NULL && yDiff < 0) {
+		curr = curr->adj[UP];
+		yDiff++;
+	}
+	return curr;
+}
+
+static Room findChosenRoom(Room room, int roomInd) {
+	Room chosenRoom = room;
+	for (int i = 0; i < MAX_SIZE; i++) {
+		for (int j = 0; j < MAX_SIZE && roomInd > 0; j++) {
+			if (isVisited(j, i)) {
+				Room maybeChosen = getRoomFromFloorXY(room, j, i);
+				if (!isRoomFull(maybeChosen)) {
+					chosenRoom = maybeChosen;
+					roomInd--;
+				}
+			} 
+		}
+	}
+
+	return chosenRoom;
+}
+
+static void assignNPCs(Room room) {
+	// Set the total
+	currFloor->totalNpcs = MAX_NPCS_ON_FLOOR;
+
+	// Track the NPCs chosen
+	bool isChosen[NUM_NPC_TYPES];
+	memset(isChosen, false, NUM_NPC_TYPES * sizeof(bool));
+
+	// Assign 
+	for (int i = 0; i < MAX_NPCS_ON_FLOOR; i++) {
+		int newType = rand(NUM_NPC_TYPES);
+		while (isChosen[newType]) newType = rand(NUM_NPC_TYPES);
+		isChosen[newType] = true;
+
+		// Make new NPC and calc a room for them
+		NPC currNpc = NPCNew(newType);
+		Room chosenRoom = findChosenRoom(room, rand(MAX_ROOMS));
+
+		// Assign said room
+		for (int j = 0; j < MAX_NPCS; j++) {
+			if (chosenRoom->npcs[j] == NULL) chosenRoom->npcs[j] = currNpc;
+		}
 	}
 }
 
@@ -132,10 +200,7 @@ static Room generateFloorRec(Room newRoom, Room prevRoom, int prevX, int prevY, 
 		setAdjRoom(newRoom, prevRoom, prevDoor);
 		makeDoor(newRoom, prevDoor);
 	}
-	
-	// Generate enemies for the room
-	genNPCs(newRoom);
-	
+
 	for (int i = 0; i < 10; i++) {
 		// Randomise the chances a bit and get next room directions
 		int ranGD = rand(MAX_DIRS);
@@ -187,9 +252,12 @@ void generateFloor(void) {
 	floorY = MAX_RADIUS;
 	map[floorY][floorX] = true;
 	
-	// Generate the rooms and make the start
+	// Generate the rooms and assign NPCs
 	int limit = 0;
 	Room seededRoom = generateFloorRec(start, start, floorX, floorY, &limit, MAX_DIRS, 6);
+	printf("start\n");
+	assignNPCs(seededRoom);
+	printf("done\n");
 	setCurrRoom(seededRoom);
 
 	// Clear the map for player exploration
