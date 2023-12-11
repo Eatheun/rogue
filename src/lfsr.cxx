@@ -21,9 +21,11 @@ void setSeed(void) {
 			break;
 		}
 	}
+
+	seed &= 0x7f007f00;
 }
 
-int rand(int num) {
+static int lfsrRand(void) {
 	unsigned int bits = 0;
 	
 	bits ^= seed >> 0;
@@ -33,8 +35,24 @@ int rand(int num) {
 	bits &= 1u;
 	
 	seed = (seed >> 1) | (bits << 31);
+
+	return seed;
+}
+
+static int cantor(int x, int y) {
+	return (x + y) * (x + y + 1) / 2 + y;
+}
+
+static int cantorRand(void) {
+	int first2b = seed >> 16;
+	int second2b = seed & 0xffff;
+	seed = cantor(first2b, second2b);
 	
-	return seed % num;
+	return seed;
+}
+
+int rand(int num) {
+	return cantorRand() % num;
 }
 
 bool chance(int numer, int denom) {
