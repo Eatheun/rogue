@@ -40,73 +40,72 @@ static bool isRoomFull(Room room) {
 	return true;
 }
 
-static Room getRoomFromFloorXY(Room start, int x, int y) {
-	Room curr = start;
-	int xDiff = x - MAX_RADIUS;
-	int yDiff = y - MAX_RADIUS;
-
-	// go across x
-	while (curr != NULL && xDiff > 0) {
-		curr = curr->adj[RIGHT];
-		xDiff--;
-	}
-	while (curr != NULL && xDiff < 0) {
-		curr = curr->adj[LEFT];
-		xDiff++;
+static void arrayifyRooms(Room curr, Room prev, int *index, Room *roomsArr) {
+	if (curr == NULL || *index >= MAX_ROOMS) {
+		return;
 	}
 
-	// go across y
-	while (curr != NULL && yDiff > 0) {
-		curr = curr->adj[DOWN];
-		yDiff--;
+	roomsArr[*index] = curr;
+	(*index)++;
+
+	for (int i = 0; i < MAX_DIRS; i++) {
+		Room nextRoom = curr->adj[i];
+		if (nextRoom == prev) continue;
+		arrayifyRooms(nextRoom, curr, index, roomsArr);
 	}
-	while (curr != NULL && yDiff < 0) {
-		curr = curr->adj[UP];
-		yDiff++;
-	}
-	return curr;
 }
 
-static Room findChosenRoom(Room room, int roomInd) {
-	Room chosenRoom = room;
-	for (int i = 0; i < MAX_SIZE; i++) {
-		for (int j = 0; j < MAX_SIZE && roomInd > 0; j++) {
-			if (isVisited(j, i)) {
-				Room maybeChosen = getRoomFromFloorXY(room, j, i);
-				if (!isRoomFull(maybeChosen)) {
-					chosenRoom = maybeChosen;
-					roomInd--;
-				}
-			} 
-		}
-	}
-
-	return chosenRoom;
+static void assignNpcToRoom(Room room, NPC npc, int npcInd) {
+	room->npcs[npcInd] = npc;
+	int roomH = room->roomH;
+	int roomW = room->roomW;
+	setNpcCoor(npc, rand(roomW - 2) + 1, rand(roomH - 2) + 1);
+	printf("Max dim = (%d, %d) ", roomW, roomH);
+	printf("npc coors = %d\n", getNpcCoor(npc));
 }
+
+#include <conio.h>
 
 static void assignNPCs(Room room) {
 	// Set the total
 	currFloor->totalNpcs = MAX_NPCS_ON_FLOOR;
 
-	// Track the NPCs chosen
-	bool isChosen[NUM_NPC_TYPES];
-	memset(isChosen, false, NUM_NPC_TYPES * sizeof(bool));
+	// Track the NPCs chosen and the rooms
+	bool isChosenNpc[NUM_NPC_TYPES];
+	memset(isChosenNpc, false, NUM_NPC_TYPES * sizeof(bool));
+
+	// Array-ify the rooms
+	Room roomsArr[MAX_ROOMS];
+	for (int i = 0; i < NUM_NPC_TYPES; i++) roomsArr[i] = NULL;
+	int index = 0;
+	arrayifyRooms(room, room, &index, roomsArr);
+	for (int i = 0; i < MAX_ROOMS; i++) printf("%p\n", roomsArr[i]);
 
 	// Assign 
 	for (int i = 0; i < MAX_NPCS_ON_FLOOR; i++) {
 		int newType = rand(NUM_NPC_TYPES);
-		while (isChosen[newType]) newType = rand(NUM_NPC_TYPES);
-		isChosen[newType] = true;
+		while (isChosenNpc[newType]) newType = rand(NUM_NPC_TYPES);
+		isChosenNpc[newType] = true;
 
 		// Make new NPC and calc a room for them
 		NPC currNpc = NPCNew(newType);
-		Room chosenRoom = findChosenRoom(room, rand(MAX_ROOMS));
+		Room chosenRoom = roomsArr[rand(MAX_ROOMS)];
+		while (chosenRoom == NULL || isRoomFull(chosenRoom)) {
+			chosenRoom = roomsArr[rand(MAX_ROOMS)];
+		}
 
-		// Assign said room
+		// Assign to said room and give them the coordinates
 		for (int j = 0; j < MAX_NPCS; j++) {
-			if (chosenRoom->npcs[j] == NULL) chosenRoom->npcs[j] = currNpc;
+				printf("room = %p, ", chosenRoom);
+				printf("type = %d, ", newType);
+			if (chosenRoom->npcs[j] == NULL) {
+				assignNpcToRoom(chosenRoom, currNpc, j);
+				break;
+			}
 		}
 	}
+	
+	while (true) if (getch() != 0) break;
 }
 
 int isNPC(int x, int y) {
@@ -255,9 +254,7 @@ void generateFloor(void) {
 	// Generate the rooms and assign NPCs
 	int limit = 0;
 	Room seededRoom = generateFloorRec(start, start, floorX, floorY, &limit, MAX_DIRS, 6);
-	printf("start\n");
 	assignNPCs(seededRoom);
-	printf("done\n");
 	setCurrRoom(seededRoom);
 
 	// Clear the map for player exploration
@@ -293,14 +290,13 @@ void setOffMY(int offy) { offMY = offy; }
 //////////////////////// ROOMS ////////////////////////
 
 static int resize(int dim) {
-	dim = MAX(dim, MIN_SIZE);
-    dim = dim % 2 == 0 ? dim + 1 : dim;
+    dim = dim % 2 == 1 ? dim + 1 : dim;
     return dim;
 }
 
 static void randRoomSize(Room newRoom) {
-    newRoom->roomH = resize(rand(MAX_SIZE));
-    newRoom->roomW = resize(rand(MAX_SIZE));
+    newRoom->roomH = resize(rand(MAX_SIZE - MIN_SIZE)) + MIN_SIZE;
+    newRoom->roomW = resize(rand(MAX_SIZE - MIN_SIZE)) + MIN_SIZE;
 }
 
 Room RoomNew(void) {

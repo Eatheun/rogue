@@ -52,7 +52,8 @@ static int cantorRand(void) {
 }
 
 int rand(int num) {
-	return cantorRand() % num;
+	unsigned int randUInt = (unsigned int) cantorRand();
+	return randUInt % num;
 }
 
 bool chance(int numer, int denom) {
