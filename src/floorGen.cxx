@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "cells.h"
 #include "floorGen.h"
@@ -29,15 +30,78 @@ struct room {
 
 //////////////////////// NPC ////////////////////////
 
-static void genNPCs(Room room) {
-	int numNPC = rand(MAX_NPCS);
-	room->numNPCs = numNPC;
-	currFloor->totalNpcs += numNPC;
-	for (int i = 0; i < numNPC; i++) {
-		// Make npcs and randomise their coordinates
-		NPC newNpc = NPCNew(rand(NUM_NPC_TYPES));
-		setNpcCoor(newNpc, rand(room->roomW - 2) + 1, rand(room->roomH - 2) + 1);
-		room->npcs[i] = newNpc;
+static void arrayifyRooms(Room curr, Room prev, int *index, Room *roomsArr) {
+	if (curr == NULL || *index >= MAX_ROOMS) {
+		return;
+	}
+
+	roomsArr[*index] = curr;
+	(*index)++;
+
+	for (int i = 0; i < MAX_DIRS; i++) {
+		Room nextRoom = curr->adj[i];
+		if (nextRoom == prev) continue;
+		arrayifyRooms(nextRoom, curr, index, roomsArr);
+	}
+}
+
+static void assignNpcToRoom(Room room, NPC npc, int npcInd) {
+	// Append to NPCs
+	room->npcs[npcInd] = npc;
+
+	// Set the coordinates
+	int roomH = room->roomH;
+	int roomW = room->roomW;
+	int npcXBase = (roomW >> 1) - 1;
+	int npcYBase = (roomH >> 1) - 1;
+	int npcXOff = npcInd % 2 == 1 ? (roomW >> 1) + 1 : 0;
+	int npcYOff = npcInd > 1 ? (roomH >> 1) + 1 : 0;
+
+	setNpcCoor(
+		npc,
+		rand(npcXBase) + npcXOff + 1,
+		rand(npcYBase) + npcYOff + 1
+	);
+}
+
+#include <conio.h>
+
+static void assignNPCs(Room room) {
+	// Set the total
+	currFloor->totalNpcs = MAX_NPCS_ON_FLOOR;
+
+	// Track the NPCs chosen and the rooms
+	bool isChosenNpc[NUM_NPC_TYPES];
+	memset(isChosenNpc, false, NUM_NPC_TYPES * sizeof(bool));
+
+	// Array-ify the rooms
+	Room roomsArr[MAX_ROOMS];
+	for (int i = 0; i < NUM_NPC_TYPES; i++) roomsArr[i] = NULL;
+	int index = 0;
+	arrayifyRooms(room, room, &index, roomsArr);
+
+	// Assign 
+	for (int i = 0; i < MAX_NPCS_ON_FLOOR; i++) {
+		int newType = rand(NUM_NPC_TYPES);
+		while (isChosenNpc[newType]) newType = rand(NUM_NPC_TYPES);
+		isChosenNpc[newType] = true;
+
+		// Make new NPC and calc a room for them
+		NPC currNpc = NPCNew(newType);
+		Room chosenRoom = roomsArr[rand(MAX_ROOMS)];
+		int baseFracDigit = MAX_NPCS << 1;
+		while (chosenRoom == NULL || !chance(baseFracDigit - (chosenRoom->numNPCs << 1), baseFracDigit)) {
+			chosenRoom = roomsArr[rand(MAX_ROOMS)];
+		}
+		chosenRoom->numNPCs++;
+
+		// Assign to said room and give them the coordinates
+		for (int j = 0; j < MAX_NPCS; j++) {
+			if (chosenRoom->npcs[j] == NULL) {
+				assignNpcToRoom(chosenRoom, currNpc, j);
+				break;
+			}
+		}
 	}
 }
 
@@ -132,10 +196,7 @@ static Room generateFloorRec(Room newRoom, Room prevRoom, int prevX, int prevY, 
 		setAdjRoom(newRoom, prevRoom, prevDoor);
 		makeDoor(newRoom, prevDoor);
 	}
-	
-	// Generate enemies for the room
-	genNPCs(newRoom);
-	
+
 	for (int i = 0; i < 10; i++) {
 		// Randomise the chances a bit and get next room directions
 		int ranGD = rand(MAX_DIRS);
@@ -187,9 +248,10 @@ void generateFloor(void) {
 	floorY = MAX_RADIUS;
 	map[floorY][floorX] = true;
 	
-	// Generate the rooms and make the start
+	// Generate the rooms and assign NPCs
 	int limit = 0;
 	Room seededRoom = generateFloorRec(start, start, floorX, floorY, &limit, MAX_DIRS, 6);
+	assignNPCs(seededRoom);
 	setCurrRoom(seededRoom);
 
 	// Clear the map for player exploration
@@ -225,14 +287,13 @@ void setOffMY(int offy) { offMY = offy; }
 //////////////////////// ROOMS ////////////////////////
 
 static int resize(int dim) {
-	dim = MAX(dim, MIN_SIZE);
     dim = dim % 2 == 0 ? dim + 1 : dim;
     return dim;
 }
 
 static void randRoomSize(Room newRoom) {
-    newRoom->roomH = resize(rand(MAX_SIZE));
-    newRoom->roomW = resize(rand(MAX_SIZE));
+    newRoom->roomH = resize(rand(MAX_SIZE - MIN_SIZE) + MIN_SIZE);
+    newRoom->roomW = resize(rand(MAX_SIZE - MIN_SIZE) + MIN_SIZE);
 }
 
 Room RoomNew(void) {
