@@ -30,16 +30,6 @@ struct room {
 
 //////////////////////// NPC ////////////////////////
 
-static bool isRoomFull(Room room) {
-	for (int i = 0; i < MAX_NPCS; i++) {
-		if (room->npcs[i] == NULL) {
-			return false;
-		}
-	}
-
-	return true;
-}
-
 static void arrayifyRooms(Room curr, Room prev, int *index, Room *roomsArr) {
 	if (curr == NULL || *index >= MAX_ROOMS) {
 		return;
@@ -56,12 +46,22 @@ static void arrayifyRooms(Room curr, Room prev, int *index, Room *roomsArr) {
 }
 
 static void assignNpcToRoom(Room room, NPC npc, int npcInd) {
+	// Append to NPCs
 	room->npcs[npcInd] = npc;
+
+	// Set the coordinates
 	int roomH = room->roomH;
 	int roomW = room->roomW;
-	setNpcCoor(npc, rand(roomW - 2) + 1, rand(roomH - 2) + 1);
-	printf("Max dim = (%d, %d) ", roomW, roomH);
-	printf("npc coors = %d\n", getNpcCoor(npc));
+	int npcXBase = (roomW >> 1) - 1;
+	int npcYBase = (roomH >> 1) - 1;
+	int npcXOff = npcInd % 2 == 1 ? (roomW >> 1) + 1 : 0;
+	int npcYOff = npcInd > 1 ? (roomH >> 1) + 1 : 0;
+
+	setNpcCoor(
+		npc,
+		rand(npcXBase) + npcXOff + 1,
+		rand(npcYBase) + npcYOff + 1
+	);
 }
 
 #include <conio.h>
@@ -79,7 +79,6 @@ static void assignNPCs(Room room) {
 	for (int i = 0; i < NUM_NPC_TYPES; i++) roomsArr[i] = NULL;
 	int index = 0;
 	arrayifyRooms(room, room, &index, roomsArr);
-	for (int i = 0; i < MAX_ROOMS; i++) printf("%p\n", roomsArr[i]);
 
 	// Assign 
 	for (int i = 0; i < MAX_NPCS_ON_FLOOR; i++) {
@@ -90,22 +89,20 @@ static void assignNPCs(Room room) {
 		// Make new NPC and calc a room for them
 		NPC currNpc = NPCNew(newType);
 		Room chosenRoom = roomsArr[rand(MAX_ROOMS)];
-		while (chosenRoom == NULL || isRoomFull(chosenRoom)) {
+		int baseFracDigit = MAX_NPCS << 1;
+		while (chosenRoom == NULL || !chance(baseFracDigit - (chosenRoom->numNPCs << 1), baseFracDigit)) {
 			chosenRoom = roomsArr[rand(MAX_ROOMS)];
 		}
+		chosenRoom->numNPCs++;
 
 		// Assign to said room and give them the coordinates
 		for (int j = 0; j < MAX_NPCS; j++) {
-				printf("room = %p, ", chosenRoom);
-				printf("type = %d, ", newType);
 			if (chosenRoom->npcs[j] == NULL) {
 				assignNpcToRoom(chosenRoom, currNpc, j);
 				break;
 			}
 		}
 	}
-	
-	while (true) if (getch() != 0) break;
 }
 
 int isNPC(int x, int y) {
@@ -290,13 +287,13 @@ void setOffMY(int offy) { offMY = offy; }
 //////////////////////// ROOMS ////////////////////////
 
 static int resize(int dim) {
-    dim = dim % 2 == 1 ? dim + 1 : dim;
+    dim = dim % 2 == 0 ? dim + 1 : dim;
     return dim;
 }
 
 static void randRoomSize(Room newRoom) {
-    newRoom->roomH = resize(rand(MAX_SIZE - MIN_SIZE)) + MIN_SIZE;
-    newRoom->roomW = resize(rand(MAX_SIZE - MIN_SIZE)) + MIN_SIZE;
+    newRoom->roomH = resize(rand(MAX_SIZE - MIN_SIZE) + MIN_SIZE);
+    newRoom->roomW = resize(rand(MAX_SIZE - MIN_SIZE) + MIN_SIZE);
 }
 
 Room RoomNew(void) {
