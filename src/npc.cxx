@@ -2,29 +2,22 @@
 #include <stdlib.h>
 
 #include "cells.h"
-#include "npc.h"
 #include "lfsr.h"
-
-static void fillerFunc(void *args) {
-	printf("Hello\n");
-}
+#include "npc.h"
+#include "npcActions.h"
 
 struct npc {
 	int npcType;
-	void (*act)(void *args);
+	NPCActions actions;
 	Coor pos;
 };
-
-static void genStats(NPC npc) {
-	npc->act = fillerFunc;
-}
 
 NPC NPCNew(int npcType) {
 	NPC newNpc = (NPC) malloc(sizeof(struct npc));
 	newNpc->npcType = npcType;
-	genStats(newNpc);
+	newNpc->actions = NPCActionsNew();
 	newNpc->pos = 0xffff; // Not to be set here
-	
+
 	return newNpc;
 }
 

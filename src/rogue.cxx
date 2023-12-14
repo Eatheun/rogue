@@ -147,7 +147,7 @@ int main(int argc, char **argv) {
 				// Should have closed map 
 				printFullMap();
 				printMinimap();
-			} else if (isNPC(_px, _py) && openTextMode(fillerText)) {
+			} else if (isNPC(_px, _py) != NUM_NPC_TYPES && openTextMode(fillerText)) {
 
 			}
 			removeCursor();

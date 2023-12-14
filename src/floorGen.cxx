@@ -64,8 +64,6 @@ static void assignNpcToRoom(Room room, NPC npc, int npcInd) {
 	);
 }
 
-#include <conio.h>
-
 static void assignNPCs(Room room) {
 	// Set the total
 	currFloor->totalNpcs = MAX_NPCS_ON_FLOOR;
