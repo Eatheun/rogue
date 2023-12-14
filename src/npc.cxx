@@ -71,7 +71,13 @@ static void printNpcType(NPC npc) {
     for (int i = 0; i < (DIST_FROM_MAINM >> 1); i++) printf("\e[1B");
     printf("\e[1;4m"); // Set the underline and intensity
 
-    FILE *typesToText = fopen("npcTBoxTypePrint.txt", "r");
+    char typesToTextFP[] = "./src/npcTBoxTypePrint.txt";
+    FILE *typesToText = fopen(typesToTextFP, "r");
+    if (typesToText == NULL) {
+        fprintf(stderr, "Missing file %s\n", typesToTextFP);
+        printf("\e[7E\e[0m");
+        exit(1);
+    }
 
     int npcType = npc->npcType;
     int typeLen = TXTW >> 1;
