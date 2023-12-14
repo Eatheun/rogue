@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "cells.h"
+#include "const.h"
 #include "floorGen.h"
 #include "playerPos.h"
 

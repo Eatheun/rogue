@@ -1,14 +1,6 @@
 #ifndef FLOOR_GEN_H
 #define FLOOR_GEN_H
 
-#define MAX_ROOMS 9
-#define MAX_NPCS_ON_FLOOR 10
-#define MAX_RADIUS (MAX_ROOMS / 2 - 1)
-#define MAX_FLOOR_SIZE (2 * MAX_RADIUS + 1)
-#define MAX_CORR_SIZE (2 * MAX_FLOOR_SIZE + 1)
-#define MIN_SIZE 11
-#define MAX_SIZE 17
-
 #define _floorX getFloorX()
 #define _floorY getFloorY()
 #define _currRoom getCurrRoom()

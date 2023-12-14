@@ -2,6 +2,8 @@
 #include <stdlib.h>
 
 #include "cells.h"
+#include "const.h"
+#include "inputs.h"
 #include "lfsr.h"
 #include "npc.h"
 #include "npcActions.h"
@@ -97,7 +99,7 @@ bool openTextMode(NPCActions actions) {
     }
 
     while (true) {
-        if (getch() == 'e') {
+        if (getComm() == 'e') {
             closeTBox();
             break;
         }

@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "cells.h"
+#include "const.h"
 #include "directions.h"
 #include "floorGen.h"
 #include "inputs.h"

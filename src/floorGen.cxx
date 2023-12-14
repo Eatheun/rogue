@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "cells.h"
+#include "const.h"
 #include "floorGen.h"
 #include "directions.h"
 #include "inputs.h"

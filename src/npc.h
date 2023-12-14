@@ -3,8 +3,6 @@
 
 #include "npcActions.h"
 
-#define MAX_NPCS 4
-
 typedef struct npc *NPC;
 
 //////////////////////// NPC ////////////////////////

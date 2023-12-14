@@ -4,8 +4,9 @@
 #include <conio.h>
 #include <windows.h>
 
-#include "inputs.h"
+#include "const.h"
 #include "floorGen.h"
+#include "inputs.h"
 #include "minimap.h"
 #include "npcActions.h"
 
@@ -13,7 +14,7 @@ char fillerText[] = "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed 
 
 struct npcActions {
     char *text /* [TXTH * TXTW] */;
-    void (*mission)(void *args);
+    Mission mission;
 };
 
 //////////////////////// NPC ACTIONS ////////////////////////
@@ -29,3 +30,8 @@ void NPCActionsFree(NPCActions actions) {
     free(actions->text);
     free(actions);
 }
+
+char *getActionsText(NPCActions actions) { return actions->text; };
+void setActionsText(NPCActions actions, char *text) { actions->text = text; };
+Mission getActionsMission(NPCActions actions) { return actions->mission; };
+void setActionsMission(NPCActions actions, Mission mission) { actions->mission = mission; };
