@@ -30,7 +30,7 @@ static Floor currFloor;
 
 #include "npc.h"
 
-int isNPC(int x, int y);
+NPC isNPC(int x, int y);
 NPC *getNpcsInRoom(Room room);
 
 //////////////////////// FLOORS ////////////////////////

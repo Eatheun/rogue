@@ -80,9 +80,9 @@ void printFullMap(void) {
 	printf(DRKBLUBCK);
 	for (int i = 1; i < _currRoomH - 1; i++) {
 		for (int j = 1; j < _currRoomW - 1; j++) {
-			if (isNPC(j, i) != NUM_NPC_TYPES) {
-				int ret = isNPC(j, i);
-				printf("%s", npcCells[ret]);
+			if (isNPC(j, i)) {
+				NPC ret = isNPC(j, i);
+				printf("%s", npcCells[getNpcNpcType(ret)]);
 				printf(DRKBLUBCK);
 			} else {
 				putBlock();
@@ -133,6 +133,7 @@ int main(int argc, char **argv) {
 	removeCursor();
 
 	char fillerText[] = "Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do eiusmod tempor";
+	NPC npcRet;
 	while (true) {
 		if (getComm() != 0) {
 			// Check if we're quitting
@@ -147,7 +148,7 @@ int main(int argc, char **argv) {
 				// Should have closed map 
 				printFullMap();
 				printMinimap();
-			} else if (isNPC(_px, _py) != NUM_NPC_TYPES && openTextMode(fillerText)) {
+			} else if ((npcRet = isNPC(_px, _py)) && openTextMode(getNpcActions(npcRet))) {
 
 			}
 			removeCursor();

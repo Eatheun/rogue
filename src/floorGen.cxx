@@ -9,6 +9,7 @@
 #include "inputs.h"
 #include "lfsr.h"
 #include "npc.h"
+#include "npcActions.h"
 
 struct floor {
 	Room currRoom;
@@ -103,17 +104,17 @@ static void assignNPCs(Room room) {
 	}
 }
 
-int isNPC(int x, int y) {
+NPC isNPC(int x, int y) {
 	int coorXY = x * 100 + y;
 	Room currRoom = currFloor->currRoom;
 	for (int i = 0; i < currRoom->numNPCs; i++) {
 		NPC currEn = currRoom->npcs[i];
 		if (getNpcCoor(currEn) == coorXY) {
-			return getNpcNpcType(currEn);
+			return currEn;
 		}
 	}
 	
-	return NUM_NPC_TYPES;
+	return NULL;
 }
 
 NPC *getNpcsInRoom(Room room) {
@@ -318,11 +319,16 @@ Room RoomNew(void) {
 }
 
 void RoomFree(Room newRoom) {
+	if (newRoom == NULL) return;
+
 	// Free enemies
 	for (int i = 0; i < MAX_NPCS; i++) {
-		NPCFree(newRoom->npcs[i]);
+		// Free actions and npc
+		NPC currNpc = newRoom->npcs[i];
+		if (currNpc == NULL) continue;
+		NPCActionsFree(getNpcActions(currNpc));
+		NPCFree(currNpc);
 	}
-	
 	free(newRoom);
 }
 

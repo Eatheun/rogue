@@ -22,9 +22,9 @@ void setPy(int ty) {
 
 void removePlayer(void) {
     printf("\e[%d;%dH", py + _offMY + 1, (px + _offMX) * 2 + 1); // Go to player position
-    if (isNPC(px, py) != NUM_NPC_TYPES) {
-        int ret = isNPC(px, py);
-        printf("%s", npcCells[ret]);
+    if (isNPC(px, py)) {
+        NPC ret = isNPC(px, py);
+        printf("%s", npcCells[getNpcNpcType(ret)]);
     } else {
         printf(FLOOR);
     }
