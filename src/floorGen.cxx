@@ -54,8 +54,8 @@ static void assignNpcToRoom(Room room, NPC npc, int npcInd) {
 	int roomW = room->roomW;
 	int npcXBase = (roomW >> 1) - 1;
 	int npcYBase = (roomH >> 1) - 1;
-	int npcXOff = npcInd % 2 == 1 ? (roomW >> 1) + 1 : 0;
-	int npcYOff = npcInd > 1 ? (roomH >> 1) + 1 : 0;
+	int npcXOff = npcInd % 2 == 1 ? (roomW >> 1) : 0;
+	int npcYOff = npcInd > 1 ? (roomH >> 1) : 0;
 
 	setNpcCoor(
 		npc,
