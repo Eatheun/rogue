@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #include "cells.h"
+#include "const.h"
 #include "directions.h"
 #include "inputs.h"
 #include "floorGen.h"

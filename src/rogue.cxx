@@ -3,13 +3,15 @@
 #include <stdbool.h>
 
 #include "cells.h"
+#include "const.h"
 #include "directions.h"
 #include "floorGen.h"
-#include "npc.h"
 #include "inputs.h"
 #include "lfsr.h"
 #include "minimap.h"
 #include "movements.h"
+#include "npc.h"
+#include "npcActions.h"
 #include "playerPos.h"
 
 //////////////////////////////// ANSI Functions ////////////////////////////////
@@ -79,9 +81,9 @@ void printFullMap(void) {
 	printf(DRKBLUBCK);
 	for (int i = 1; i < _currRoomH - 1; i++) {
 		for (int j = 1; j < _currRoomW - 1; j++) {
-			if (isNPC(j, i) != NUM_NPC_TYPES) {
-				int ret = isNPC(j, i);
-				printf("%s", npcCells[ret]);
+			if (isNPC(j, i)) {
+				NPC ret = isNPC(j, i);
+				printf("%s", npcCells[getNpcNpcType(ret)]);
 				printf(DRKBLUBCK);
 			} else {
 				putBlock();
@@ -131,6 +133,8 @@ int main(int argc, char **argv) {
 	printMinimap();
 	removeCursor();
 
+	char fillerText[] = "Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do eiusmod tempor";
+	NPC npcRet;
 	while (true) {
 		if (getComm() != 0) {
 			// Check if we're quitting
@@ -145,6 +149,8 @@ int main(int argc, char **argv) {
 				// Should have closed map 
 				printFullMap();
 				printMinimap();
+			} else if ((npcRet = isNPC(_px, _py)) && openTextMode(npcRet)) {
+
 			}
 			removeCursor();
 		}

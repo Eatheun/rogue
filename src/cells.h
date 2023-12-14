@@ -1,11 +1,20 @@
 #ifndef CELLS_H
 #define CELLS_H
 
+//////////////////////// BACKGROUNDS ////////////////////////
+
+#define BLKBCK "\e[48;2;0;0;0m"
 #define CYABCK "\e[48;5;116m"
 #define DRKBLUBCK "\e[48;5;17m"
 #define REDBCK "\e[48;5;196m"
-#define EMPTY ' '
 
+//////////////////////// TEXT ////////////////////////
+
+#define WHTXT "\e[38;2;255;255;255m"
+
+//////////////////////// CELLS ////////////////////////
+
+#define EMPTY ' '
 #define PLAYER "\e[48;5;196m\e[38;5;255mPl"
 #define FLOOR "\e[48;5;17m  "
 #define WALL "\e[48;5;116m  "
@@ -62,9 +71,5 @@ static const char *npcCells[NUM_NPC_TYPES] = {
 	CARPENTER_CELL,
 	MINSTREL_CELL,
 };
-
-// format: 4-digit int, xxyy
-//	e.g. 1034 = (10, 34)
-typedef int Coor;
 
 #endif // CELLS_H

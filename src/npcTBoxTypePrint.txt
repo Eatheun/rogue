@@ -1,0 +1,15 @@
+Merchant
+Smith
+Barber
+Tailor
+Artist
+Cook
+Cobbler
+Cartographer
+Sorcerer
+Jester
+Librarian
+Playwright
+Mason
+Carpenter
+Minstrel
