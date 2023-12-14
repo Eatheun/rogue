@@ -18,6 +18,6 @@ void setNpcCoor(NPC npc, int x, int y);
 
 //////////////////////// TEXT ////////////////////////
 
-bool openTextMode(NPCActions actions);
+bool openTextMode(NPC npc);
 
 #endif // NPC_H

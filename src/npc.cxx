@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "cells.h"
 #include "const.h"
@@ -65,8 +66,28 @@ static void printTBoxTxtLine(char *text, int *index) {
     putchar('\n'); // go down to start of next line
 }
 
+static void printNpcType(NPC npc) {
+    printf("\e[%d;3H", MAX_SIZE + BORD_OFF + ESC_OFF); // position cursor
+    for (int i = 0; i < (DIST_FROM_MAINM >> 1); i++) printf("\e[1B");
+    printf("\e[1;4m"); // Set the underline and intensity
+
+    FILE *typesToText = fopen("npcTBoxTypePrint.txt", "r");
+
+    int npcType = npc->npcType;
+    int typeLen = TXTW >> 1;
+    char typeText[typeLen];
+    fgets(typeText, typeLen, typesToText);
+    for (int i = 0; i < npcType; i++) fgets(typeText, typeLen, typesToText);
+    typeText[strlen(typeText) - 1] = '\0';
+
+    printf("%s", typeText);
+
+    fclose(typesToText); // close file
+    printf("\e[2F"); // position cursor back
+}
+
 static void printTBox(char *text) {
-    printf("\e[%d;1", MAX_SIZE + ESC_OFF); // position cursor below all the fluff
+    printf("\e[%d;1", MAX_SIZE + BORD_OFF + ESC_OFF); // position cursor below all the fluff
     for (int i = 0; i < (DIST_FROM_MAINM >> 1); i++) putchar('\n');
 
     // Print textbox
@@ -86,14 +107,15 @@ static void printTBox(char *text) {
 }
 
 static void closeTBox(void) {
-    printf("\e[%dA", TBOXH); // position cursor below all the fluff
+    printf("\e[%d;1", MAX_SIZE + ESC_OFF); // position cursor below all the fluff
     printf("\e[0m");
     printf("\e[0J");
 }
 
-bool openTextMode(NPCActions actions) {
+bool openTextMode(NPC npc) {
     if (_dir == 'e') {
-        printTBox(getActionsText(actions));
+        printTBox(getActionsText(npc->actions));
+        printNpcType(npc);
     } else {
         return false;
     }
