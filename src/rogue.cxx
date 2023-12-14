@@ -5,11 +5,12 @@
 #include "cells.h"
 #include "directions.h"
 #include "floorGen.h"
-#include "npc.h"
 #include "inputs.h"
 #include "lfsr.h"
 #include "minimap.h"
 #include "movements.h"
+#include "npc.h"
+#include "npcActions.h"
 #include "playerPos.h"
 
 //////////////////////////////// ANSI Functions ////////////////////////////////
@@ -131,6 +132,7 @@ int main(int argc, char **argv) {
 	printMinimap();
 	removeCursor();
 
+	char fillerText[] = "Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do eiusmod tempor";
 	while (true) {
 		if (getComm() != 0) {
 			// Check if we're quitting
@@ -145,6 +147,8 @@ int main(int argc, char **argv) {
 				// Should have closed map 
 				printFullMap();
 				printMinimap();
+			} else if (isNPC(_px, _py) && openTextMode(fillerText)) {
+
 			}
 			removeCursor();
 		}
