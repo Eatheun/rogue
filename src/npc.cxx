@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
 #include "../globals/cells.h"
 #include "../globals/const.h"
@@ -71,11 +72,12 @@ static void printNpcType(NPC npc) {
     for (int i = 0; i < (DIST_FROM_MAINM >> 1); i++) printf("\e[1B");
     printf("\e[1;4m"); // Set the underline and intensity
 
-    char typesToTextFP[] = "./src/npcTBoxTypePrint.txt";
+    char typesToTextFP[] = "./data/npcTBoxTypePrint.txt";
     FILE *typesToText = fopen(typesToTextFP, "r");
     if (typesToText == NULL) {
-        fprintf(stderr, "Missing file %s\n", typesToTextFP);
         printf("\e[7E\e[0m");
+        fprintf(stderr, "Missing file %s\n", typesToTextFP);
+        Sleep(2000);
         exit(1);
     }
 

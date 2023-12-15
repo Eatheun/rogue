@@ -20,14 +20,11 @@ void clear(void) {
 	printf("\e[2J\n\e[1;1H");
 }
 
-void putBlock(void) {
+static void putBlock(void) {
 	putchar(EMPTY); putchar(EMPTY);
 }
 
-void printFullMap(void) {
-	printf("\e[%d;%dH", _offMY + 1, _offMX * 2 + 1); // Center the map
-
-	// Print walls
+static void printWalls(void) {
 	printf(CYABCK);
 	for (int i = 0; i < _currRoomW; i++) { // Top
 		if (isDoor(i, 0)) {
@@ -75,8 +72,9 @@ void printFullMap(void) {
 		}
 		printf("\e[1A\e[2D");
 	}
+}
 
-	// Print inside
+static void printInside(void) {
 	printf("\e[1B\e[2C");
 	printf(DRKBLUBCK);
 	for (int i = 1; i < _currRoomH - 1; i++) {
@@ -91,11 +89,25 @@ void printFullMap(void) {
 		}
 		printf("\e[1B\e[%dD", 2 * (_currRoomW - 2));
 	}
+}
 
-	// Print player
+static void printPlayer(void) {
 	printf("\e[%d;%dH", _offMY+ _py + 1, (_offMX + _px) * 2 + 1);
 	printf(REDBCK); printf(WHTXT);
 	putchar('P'); putchar('l');
+}
+
+void printFullMap(void) {
+	printf("\e[%d;%dH", _offMY + 1, _offMX * 2 + 1); // Center the map
+
+	// Print walls
+	printWalls();
+
+	// Print inside
+	printInside();
+
+	// Print player
+	printPlayer();
 
 	printf("\e[0m");
 }

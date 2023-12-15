@@ -12,12 +12,14 @@
 
 #define WHTXT "\e[38;2;255;255;255m"
 
-//////////////////////// CELLS ////////////////////////
+//////////////////////// BASIC CELLS ////////////////////////
 
 #define EMPTY ' '
 #define PLAYER "\e[48;5;196m\e[38;5;255mPl"
 #define FLOOR "\e[48;5;17m  "
 #define WALL "\e[48;5;116m  "
+
+//////////////////////// NPC ////////////////////////
 
 enum npcType {
 	MERCHANT,
