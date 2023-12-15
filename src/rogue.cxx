@@ -2,17 +2,17 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "cells.h"
-#include "const.h"
-#include "directions.h"
-#include "floorGen.h"
-#include "inputs.h"
-#include "lfsr.h"
-#include "minimap.h"
-#include "movements.h"
-#include "npc.h"
-#include "npcActions.h"
-#include "playerPos.h"
+#include "../globals/cells.h"
+#include "../globals/const.h"
+#include "../globals/directions.h"
+#include "../headers/floorGen.h"
+#include "../headers/inputs.h"
+#include "../headers/lfsr.h"
+#include "../headers/minimap.h"
+#include "../headers/movements.h"
+#include "../headers/npc.h"
+#include "../headers/npcActions.h"
+#include "../headers/playerPos.h"
 
 //////////////////////////////// ANSI Functions ////////////////////////////////
 

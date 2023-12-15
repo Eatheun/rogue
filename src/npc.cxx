@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "cells.h"
-#include "const.h"
-#include "inputs.h"
-#include "lfsr.h"
-#include "npc.h"
-#include "npcActions.h"
+#include "../globals/cells.h"
+#include "../globals/const.h"
+#include "../headers/inputs.h"
+#include "../headers/lfsr.h"
+#include "../headers/npc.h"
+#include "../headers/npcActions.h"
 
 struct npc {
 	int npcType;

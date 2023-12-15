@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#include "cells.h"
-#include "const.h"
-#include "floorGen.h"
-#include "playerPos.h"
+#include "../globals/cells.h"
+#include "../globals/const.h"
+#include "../headers/floorGen.h"
+#include "../headers/playerPos.h"
 
 int getPx(void) {
     return px;

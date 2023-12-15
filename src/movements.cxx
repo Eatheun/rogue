@@ -1,13 +1,13 @@
 #include <stdio.h>
 
-#include "cells.h"
-#include "const.h"
-#include "directions.h"
-#include "floorGen.h"
-#include "inputs.h"
-#include "minimap.h"
-#include "movements.h"
-#include "playerPos.h"
+#include "../globals/cells.h"
+#include "../globals/const.h"
+#include "../globals/directions.h"
+#include "../headers/floorGen.h"
+#include "../headers/inputs.h"
+#include "../headers/minimap.h"
+#include "../headers/movements.h"
+#include "../headers/playerPos.h"
 
 static bool isValidDir(int x, int y) {
     bool isValidX = 0 < x && x < _currRoomW - 1;
