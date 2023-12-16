@@ -40,11 +40,9 @@ void setNpcCoor(NPC npc, int x, int y) { npc->pos = x * 100 + y; }
 
 void printNpcCell(NPC npc) {
 	// getting the character
-	int npcType = npc->npcType;
 	char npcCell[128];
     char fp[] = "./data/npcCells.txt";
     getNpcFileData(npc, npcCell, fp);
-	char npcCellsFp[] = "../data/npcCells.txt";
 
 	// print
 	printf("%s", npcCell);
@@ -84,10 +82,10 @@ static void printNpcType(NPC npc) {
     for (int i = 0; i < (DIST_FROM_MAINM >> 1); i++) printf("\e[1B");
     printf("\e[1;4m"); // Set the underline and intensity
 
+    // getting and printing type title
     char typeText[128];
     char fp[] = "./data/npcTBoxTypePrint.txt";
     getNpcFileData(npc, typeText, fp);
-
     printf("%s", typeText);
 
     printf("\e[2F"); // position cursor back
