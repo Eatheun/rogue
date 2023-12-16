@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
+#include <windows.h>
 
 #include "../globals/cells.h"
 #include "../globals/const.h"
@@ -81,7 +83,7 @@ static void printInside(void) {
 		for (int j = 1; j < _currRoomW - 1; j++) {
 			if (isNPC(j, i)) {
 				NPC ret = isNPC(j, i);
-				printf("%s", npcCells[getNpcNpcType(ret)]);
+				printNpcCell(ret);
 				printf(DRKBLUBCK);
 			} else {
 				putBlock();
