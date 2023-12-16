@@ -15,9 +15,14 @@ NPCActions getNpcActions(NPC npc);
 void setNpcActions(NPC npc, NPCActions actions);
 int getNpcCoor(NPC npc);
 void setNpcCoor(NPC npc, int x, int y);
+void printNpcCell(NPC npc);
 
 //////////////////////// TEXT ////////////////////////
 
 bool openTextMode(NPC npc);
+
+//////////////////////// FILES ////////////////////////
+
+char *getNpcFileData(NPC npc, char buf[], char fp[]);
 
 #endif // NPC_H

@@ -4,11 +4,11 @@
 #include <conio.h>
 #include <windows.h>
 
-#include "const.h"
-#include "floorGen.h"
-#include "inputs.h"
-#include "minimap.h"
-#include "npcActions.h"
+#include "../globals/const.h"
+#include "../headers/floorGen.h"
+#include "../headers/inputs.h"
+#include "../headers/minimap.h"
+#include "../headers/npcActions.h"
 
 char fillerText[] = "Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
 

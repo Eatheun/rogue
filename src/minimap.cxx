@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "cells.h"
-#include "const.h"
-#include "directions.h"
-#include "inputs.h"
-#include "floorGen.h"
-#include "minimap.h"
-#include "npc.h"
+#include "../globals/cells.h"
+#include "../globals/const.h"
+#include "../globals/directions.h"
+#include "../headers/inputs.h"
+#include "../headers/floorGen.h"
+#include "../headers/minimap.h"
+#include "../headers/npc.h"
 
 static void setStdClr(void) {
     printf(BLKBCK);

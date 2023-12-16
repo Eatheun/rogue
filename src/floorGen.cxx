@@ -3,14 +3,14 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "cells.h"
-#include "const.h"
-#include "floorGen.h"
-#include "directions.h"
-#include "inputs.h"
-#include "lfsr.h"
-#include "npc.h"
-#include "npcActions.h"
+#include "../globals/cells.h"
+#include "../globals/const.h"
+#include "../globals/directions.h"
+#include "../headers/floorGen.h"
+#include "../headers/inputs.h"
+#include "../headers/lfsr.h"
+#include "../headers/npc.h"
+#include "../headers/npcActions.h"
 
 struct floor {
 	Room currRoom;

@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 
-#include "cells.h"
-#include "const.h"
-#include "inputs.h"
-#include "lfsr.h"
-#include "npc.h"
-#include "npcActions.h"
+#include "../globals/cells.h"
+#include "../globals/const.h"
+#include "../headers/inputs.h"
+#include "../headers/lfsr.h"
+#include "../headers/npc.h"
+#include "../headers/npcActions.h"
 
 struct npc {
 	int npcType;
@@ -36,6 +37,16 @@ NPCActions getNpcActions(NPC npc) { return npc->actions; }
 void setNpcActions(NPC npc, NPCActions actions) { npc->actions = actions; }
 int getNpcCoor(NPC npc) { return npc->pos; }
 void setNpcCoor(NPC npc, int x, int y) { npc->pos = x * 100 + y; }
+
+void printNpcCell(NPC npc) {
+	// getting the character
+	char npcCell[128];
+    char fp[] = "./data/npcCells.txt";
+    getNpcFileData(npc, npcCell, fp);
+
+	// print
+	printf("%s", npcCell);
+}
 
 //////////////////////// TEXT ////////////////////////
 
@@ -71,24 +82,12 @@ static void printNpcType(NPC npc) {
     for (int i = 0; i < (DIST_FROM_MAINM >> 1); i++) printf("\e[1B");
     printf("\e[1;4m"); // Set the underline and intensity
 
-    char typesToTextFP[] = "./src/npcTBoxTypePrint.txt";
-    FILE *typesToText = fopen(typesToTextFP, "r");
-    if (typesToText == NULL) {
-        fprintf(stderr, "Missing file %s\n", typesToTextFP);
-        printf("\e[7E\e[0m");
-        exit(1);
-    }
-
-    int npcType = npc->npcType;
-    int typeLen = TXTW >> 1;
-    char typeText[typeLen];
-    fgets(typeText, typeLen, typesToText);
-    for (int i = 0; i < npcType; i++) fgets(typeText, typeLen, typesToText);
-    typeText[strlen(typeText) - 1] = '\0';
-
+    // getting and printing type title
+    char typeText[128];
+    char fp[] = "./data/npcTBoxTypePrint.txt";
+    getNpcFileData(npc, typeText, fp);
     printf("%s", typeText);
 
-    fclose(typesToText); // close file
     printf("\e[2F"); // position cursor back
 }
 
@@ -134,4 +133,26 @@ bool openTextMode(NPC npc) {
     }
 
     return true;
+}
+
+//////////////////////// FILES ////////////////////////
+
+char *getNpcFileData(NPC npc, char buf[], char fp[]) {
+    FILE *fileToRead = fopen(fp, "r");
+    if (fileToRead == NULL) {
+        printf("\e[32E\e[0m");
+        fprintf(stderr, "Missing file %s\n", fp);
+        Sleep(2000);
+        exit(1);
+    }
+
+    // Get the data
+    int npcType = npc->npcType;
+    fgets(buf, 128, fileToRead);
+    for (int i = 0; i < npcType; i++) fgets(buf, 128, fileToRead);
+    buf[strlen(buf) - 1] = '\0';
+
+    fclose(fileToRead);
+
+    return buf;
 }

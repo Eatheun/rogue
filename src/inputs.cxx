@@ -1,8 +1,8 @@
 #include <conio.h>
 
-#include "const.h"
-#include "directions.h"
-#include "inputs.h"
+#include "../globals/const.h"
+#include "../globals/directions.h"
+#include "../headers/inputs.h"
 
 int getDir() {
     return dir;

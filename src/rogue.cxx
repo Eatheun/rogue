@@ -1,18 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
+#include <windows.h>
 
-#include "cells.h"
-#include "const.h"
-#include "directions.h"
-#include "floorGen.h"
-#include "inputs.h"
-#include "lfsr.h"
-#include "minimap.h"
-#include "movements.h"
-#include "npc.h"
-#include "npcActions.h"
-#include "playerPos.h"
+#include "../globals/cells.h"
+#include "../globals/const.h"
+#include "../globals/directions.h"
+#include "../headers/floorGen.h"
+#include "../headers/inputs.h"
+#include "../headers/lfsr.h"
+#include "../headers/minimap.h"
+#include "../headers/movements.h"
+#include "../headers/npc.h"
+#include "../headers/npcActions.h"
+#include "../headers/playerPos.h"
 
 //////////////////////////////// ANSI Functions ////////////////////////////////
 
@@ -20,14 +22,11 @@ void clear(void) {
 	printf("\e[2J\n\e[1;1H");
 }
 
-void putBlock(void) {
+static void putBlock(void) {
 	putchar(EMPTY); putchar(EMPTY);
 }
 
-void printFullMap(void) {
-	printf("\e[%d;%dH", _offMY + 1, _offMX * 2 + 1); // Center the map
-
-	// Print walls
+static void printWalls(void) {
 	printf(CYABCK);
 	for (int i = 0; i < _currRoomW; i++) { // Top
 		if (isDoor(i, 0)) {
@@ -75,15 +74,16 @@ void printFullMap(void) {
 		}
 		printf("\e[1A\e[2D");
 	}
+}
 
-	// Print inside
+static void printInside(void) {
 	printf("\e[1B\e[2C");
 	printf(DRKBLUBCK);
 	for (int i = 1; i < _currRoomH - 1; i++) {
 		for (int j = 1; j < _currRoomW - 1; j++) {
 			if (isNPC(j, i)) {
 				NPC ret = isNPC(j, i);
-				printf("%s", npcCells[getNpcNpcType(ret)]);
+				printNpcCell(ret);
 				printf(DRKBLUBCK);
 			} else {
 				putBlock();
@@ -91,11 +91,25 @@ void printFullMap(void) {
 		}
 		printf("\e[1B\e[%dD", 2 * (_currRoomW - 2));
 	}
+}
 
-	// Print player
+static void printPlayer(void) {
 	printf("\e[%d;%dH", _offMY+ _py + 1, (_offMX + _px) * 2 + 1);
 	printf(REDBCK); printf(WHTXT);
 	putchar('P'); putchar('l');
+}
+
+void printFullMap(void) {
+	printf("\e[%d;%dH", _offMY + 1, _offMX * 2 + 1); // Center the map
+
+	// Print walls
+	printWalls();
+
+	// Print inside
+	printInside();
+
+	// Print player
+	printPlayer();
 
 	printf("\e[0m");
 }

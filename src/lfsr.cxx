@@ -4,8 +4,8 @@
 #include <time.h>
 #include <stdint.h>
 
-#include "inputs.h"
-#include "lfsr.h"
+#include "../headers/inputs.h"
+#include "../headers/lfsr.h"
 
 void setSeed(void) {
 	unsigned int id = (unsigned int) time(NULL);
