@@ -6,6 +6,8 @@
 #define _currRoom getCurrRoom()
 #define _currRoomH getCurrRoomH()
 #define _currRoomW getCurrRoomW()
+#define _startRoom getStartRoom(void)
+#define _endRoom getEndRoom(void)
 #define _offMX getOffMX()
 #define _offMY getOffMY()
 
@@ -17,6 +19,7 @@ static bool corridors[MAX_CORR_SIZE][MAX_CORR_SIZE];
 static int floorX, floorY;
 static int offMX, offMY;
 static Floor currFloor;
+static Room roomsArr[MAX_ROOMS]; // For room access
 
 //////////////////////// NPC ////////////////////////
 
@@ -40,6 +43,10 @@ void FloorClear(void);
 void generateFloor(void);
 Room getCurrRoom(void);
 void setCurrRoom(Room newRoom);
+Room getStartRoom(void);
+void setStartRoom(Room newRoom);
+Room getEndRoom(void);
+void setEndRoom(Room newRoom);
 
 //////////////////////// OFFSET ////////////////////////
 
@@ -58,6 +65,8 @@ Room getAdjRoom(Room newRoom, int doorNum);
 void setAdjRoom(Room r1, Room r2, int doorNum);
 int getRoomH(Room room);
 int getRoomW(Room room);
+Coor getRoomXY(Room room);
+bool isInEndRoom(void);
 
 //////////////////////// MAP ////////////////////////
 
