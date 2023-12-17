@@ -36,7 +36,7 @@ int main(void) {
             int cuB = 255 + decrAmnt * MIN(MAX(argIndex - (decrBlock << 1), 0), decrBlock);
             int cuRGB[3] = {cuR, cuG, cuB};
             char cuBack[64];
-            sprintf(cuBack, "\e[48;2;%d;%d;%dm", cuRGB[0], cuRGB[1], cuRGB[0]);
+            sprintf(cuBack, "\e[48;2;%d;%d;%dm", cuRGB[1], cuRGB[0], cuRGB[2]);
 
             printf("%s%s%s", cuBack, WHTXT, fn);
             for (int i = 0; i < WHITESPACE - strlen(fn); i++) putchar(' ');

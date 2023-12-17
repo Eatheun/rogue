@@ -4,10 +4,11 @@
 #include "../headers/end.h"
 #include "../headers/floorGen.h"
 #include "../headers/inputs.h"
+#include "../headers/textbox.h"
 
 static void printWin(void) {
     printf("\e[1B");
-    printf("YOU WIN!        ");
+    printf("YOU WIN :D       ");
     printf("\e[16D");
 }
 
@@ -19,7 +20,9 @@ static void printLoss(void) {
 
 // Note that we assume that NPC tile has been checked
 bool guessRoom(void) {
-    if (_dir == 'e') {
+    char text[] = "Are you sure this is the exit?";
+    char title[] = "Guess Room?";
+    if (_dir == 'e' && openOptionTBox(text, title)) {
         if (isInEndRoom()) {
             printWin();
         } else {

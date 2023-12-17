@@ -1,8 +1,11 @@
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
+#include <windows.h>
 
 #include "../globals/cells.h"
 #include "../globals/const.h"
+#include "../headers/inputs.h"
 #include "../headers/textbox.h"
 
 static void printTBoxBorder(void) {
@@ -74,6 +77,12 @@ void printTBox(char *text, char *title) {
     printf("\e[%dF", TBOXH);
 }
 
+void closeTBox(void) {
+    printf("\e[%d;1", MAX_SIZE + ESC_OFF); // position cursor below all the fluff
+    printf("\e[0m");
+    printf("\e[0J");
+}
+
 // Note that atm we only accept boolean responses
 bool openOptionTBox(char *text, char *title) {
     // We gotta restrict the text to fit the options
@@ -84,12 +93,12 @@ bool openOptionTBox(char *text, char *title) {
     printTBox(strictText, title);
 
     // wait for the player response
+    while (true) {
+        if (getComm() == 'e') {
+            closeTBox();
+            break;
+        }
+    }
 
     return true;
-}
-
-void closeTBox(void) {
-    printf("\e[%d;1", MAX_SIZE + ESC_OFF); // position cursor below all the fluff
-    printf("\e[0m");
-    printf("\e[0J");
 }
