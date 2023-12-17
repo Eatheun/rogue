@@ -19,18 +19,18 @@ static void printTBoxFiller(void) {
 
 static void printTBoxTitle(char *title) {
     // Make sure we limit the title length
-    char restrict[TXTW + 1];
-    snprintf(restrict, TXTW, "%s", title);
+    char strictTitle[TXTW + 1];
+    snprintf(strictTitle, TXTW, "%s", title);
 
     putchar('#'); putchar(' ');
     printf("\e[1;4m"); // Set the underline and intensity
-    printf("%s", restrict);
+    printf("%s", strictTitle);
 
     // Reset the colours
     printf("\e[0m"); printf(BLKBCK); printf(WHTXT);
 
     // Padding
-    for (int i = 2 + strlen(restrict); i < TBOXW - 1; i++) putchar(' ');
+    for (int i = 2 + strlen(strictTitle); i < TBOXW - 1; i++) putchar(' ');
     putchar('#');
 
     // Move down
@@ -72,6 +72,20 @@ void printTBox(char *text, char *title) {
 
     // Go up
     printf("\e[%dF", TBOXH);
+}
+
+// Note that atm we only accept boolean responses
+bool openOptionTBox(char *text, char *title) {
+    // We gotta restrict the text to fit the options
+    char strictText[OPTTXTH * TXTW + 1];
+    snprintf(strictText, OPTTXTH * TXTW, "%s", text);
+
+    // Just like normal...
+    printTBox(strictText, title);
+
+    // wait for the player response
+
+    return true;
 }
 
 void closeTBox(void) {
