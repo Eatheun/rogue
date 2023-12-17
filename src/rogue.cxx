@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
 				// Should have closed map 
 				printFullMap();
 				printMinimap();
-			} else if ((npcRet = isNPC(_px, _py)) && openTextMode(npcRet)) {
+			} else if ((npcRet = isNPC(_px, _py)) && interactNPC(npcRet)) {
 
 			} else if (guessRoom()) {
 				// Sleep(2000);
