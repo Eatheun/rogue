@@ -13,6 +13,9 @@
 #define BLKBK "\e[48;5;0m"
 #define MACCASTXT "\e[1m\e[48;2;255;255;0m\e[38;2;255;0;0m"
 
+#define MAX(a, b) (a > b ? a : b)
+#define MIN(a, b) (a < b ? a : b)
+
 int main(void) {
     char *args[32];
     args[0] = GCC_PATH;
@@ -26,11 +29,14 @@ int main(void) {
         fn = curr->d_name;
         if (strstr(fn, ".cxx") != NULL) {
             // Cool colours :o
-            int cuR = 72 + 20 * argIndex;
-            int cuG = 48 + 12 * argIndex;
-            int cuB = 256 + (-16) * argIndex;
+            int decrBlock = 6;
+            int decrAmnt = - (255 / 6);
+            int cuR = 255 + decrAmnt * MIN(MAX(argIndex, 0), decrBlock);
+            int cuG = 255 + decrAmnt * MIN(MAX(argIndex - decrBlock, 0), decrBlock);
+            int cuB = 255 + decrAmnt * MIN(MAX(argIndex - (decrBlock << 1), 0), decrBlock);
+            int cuRGB[3] = {cuR, cuG, cuB};
             char cuBack[64];
-            sprintf(cuBack, "\e[48;2;%d;%d;%dm", cuR, cuG, cuB);
+            sprintf(cuBack, "\e[48;2;%d;%d;%dm", cuRGB[0], cuRGB[1], cuRGB[0]);
 
             printf("%s%s%s", cuBack, WHTXT, fn);
             for (int i = 0; i < WHITESPACE - strlen(fn); i++) putchar(' ');
