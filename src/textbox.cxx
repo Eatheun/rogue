@@ -98,7 +98,7 @@ static void setUnselectClr (void) {
 }
 
 static void changeOption(void (*setYesClr)(void), void (*setNoClr)(void)) {
-    printf("\e[%d;2H", MAX_SIZE + BORD_OFF + TITLE_OFF + OPTTXTH + 1 + ESC_OFF); // set cursor position
+    printf("\e[%d;2H", MAX_SIZE + BORD_OFF + TITLE_OFF + OPTTXTH + DIST_FROM_MAINM + ESC_OFF); // set cursor position
     printf("\e[%dC", OPTTXTWSPLIT);
     setYesClr(); chaOptSpace(); printf("YES"); chaOptSpace(); 
     printf("\e[%dC", TBOXW - (OPTTXTWSPLIT << 2));
@@ -117,7 +117,7 @@ bool openOptionTBox(char *text, char *title) {
     // Gotta print the yes/no options
     bool isYes = true;
     changeOption(setSelectClr, setUnselectClr);
-    printf("\e[%d;1H", MAX_SIZE + ESC_OFF);
+    printf("\e[%d;1H", MAX_SIZE + BORD_OFF + ESC_OFF);
 
     // wait for the player response
     while (true) {
@@ -135,7 +135,7 @@ bool openOptionTBox(char *text, char *title) {
                     changeOption(setUnselectClr, setSelectClr);
                     isYes = false;
                 }
-                printf("\e[%d;1H", MAX_SIZE + ESC_OFF);
+                printf("\e[%d;1H", MAX_SIZE + BORD_OFF + ESC_OFF);
             }
         }
     }

@@ -16,14 +16,13 @@ static void printScreen(FILE *openfp) {
             if (buf[i] == '#') {
                 printf(PURPBCK);
             } else if (buf[i] == '@') {
-                buf[i] = ' ';
                 printf(WHTBCK);
             } else if (buf[i] == ' ') {
                 printf(BLKBCK);
             } else {
                 printf("\e[0m");
             }
-            putchar(buf[i]);
+            putchar(buf[i] == '\n' ? '\n' : ' ');
         }
     }
     fclose(openfp);
