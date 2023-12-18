@@ -61,5 +61,7 @@ typedef int Coor;
 #define TBOXW (((MAX_SIZE + BORD_OFF) << 1) + DIST_FROM_MAINM + MAX_CORR_SIZE)
 #define TXTW (TBOXW - ((1 + 1) << 1))
 #define OPTTXTH (TXTH - 3)
+#define TITLE_OFF 1
+#define OPTTXTWSPLIT (TBOXW / 5 + 1)
 
 #endif // CONST_H

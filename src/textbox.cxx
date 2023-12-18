@@ -5,6 +5,7 @@
 
 #include "../globals/cells.h"
 #include "../globals/const.h"
+#include "../globals/directions.h"
 #include "../headers/inputs.h"
 #include "../headers/textbox.h"
 
@@ -83,6 +84,31 @@ void closeTBox(void) {
     printf("\e[0J");
 }
 
+static void chaOptSpace(void) {
+    int offset = (OPTTXTWSPLIT - 3) >> 1;
+    for (int i = 0; i < offset; i++) putchar(' ');
+}
+
+static void changeOptionYes(bool *isYes) {
+    printf("\e[%d;1H", MAX_SIZE + BORD_OFF + TITLE_OFF + OPTTXTH + 1 + ESC_OFF); // set cursor position
+    printf("\e[%dC", OPTTXTWSPLIT);
+    printf(GRYBCK); printf(BLKTXT); chaOptSpace(); printf("YES"); chaOptSpace(); 
+    printf("\e[%dC", OPTTXTWSPLIT);
+    printf(BLKBCK); printf(WHTXT); chaOptSpace(); printf("NO"); chaOptSpace();
+
+    *isYes = true;
+}
+
+static void changeOptionNo(bool *isYes) {
+    printf("\e[%d;1H", MAX_SIZE + BORD_OFF + TITLE_OFF + OPTTXTH + 1 + ESC_OFF); // set cursor position
+    printf("\e[%dC", OPTTXTWSPLIT);
+    printf(BLKBCK); printf(WHTXT); chaOptSpace(); printf("YES"); chaOptSpace(); 
+    printf("\e[%dC", OPTTXTWSPLIT);
+    printf(GRYBCK); printf(BLKTXT); chaOptSpace(); printf("NO"); chaOptSpace();
+
+    *isYes = false;
+}
+
 // Note that atm we only accept boolean responses
 bool openOptionTBox(char *text, char *title) {
     // We gotta restrict the text to fit the options
@@ -92,13 +118,29 @@ bool openOptionTBox(char *text, char *title) {
     // Just like normal...
     printTBox(strictText, title);
 
+    // Gotta print the yes/no options
+    bool isYes = true;
+    changeOptionYes(&isYes);
+    printf("\e[%d;1H", MAX_SIZE + ESC_OFF);
+
     // wait for the player response
     while (true) {
-        if (getComm() == 'e') {
-            closeTBox();
-            break;
+        if (getComm() != 0) {
+            int tempX, tempY = 0;
+            int ret;
+            if (_dir == 'e') {
+                closeTBox();
+                break;
+            } else if ((ret = handleAllDir(&tempX, &tempY)) != MAX_DIRS) {
+                if (ret == LEFT) {
+                    changeOptionYes(&isYes);
+                } else if (ret == RIGHT) {
+                    changeOptionNo(&isYes);
+                }
+                printf("\e[%d;1H", MAX_SIZE + ESC_OFF);
+            }
         }
     }
 
-    return true;
+    return isYes;
 }
