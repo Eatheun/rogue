@@ -10,6 +10,7 @@
 #define GRYBCK "\e[48;2;128;128;128m"
 #define PURPBCK "\e[48;2;255;0;255m"
 #define WHTBCK "\e[48;2;255;255;255m"
+#define GMOSHDBCK "\e[48;2;45;91;107m"
 
 //////////////////////// TEXT ////////////////////////
 
