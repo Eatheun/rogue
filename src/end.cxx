@@ -19,10 +19,16 @@ static void printScreen(FILE *openfp) {
                 printf(WHTBCK);
             } else if (buf[i] == ' ') {
                 printf(BLKBCK);
+            } else if (buf[i] == '$') {
+                printf(GMOSHDBCK);
             } else {
                 printf("\e[0m");
             }
-            putchar(buf[i] == '\n' ? '\n' : ' ');
+            if (buf[i] == '\n') {
+                putchar(buf[i]);
+            } else {
+                putchar(' '); putchar(' ');
+            }
         }
     }
     fclose(openfp);
