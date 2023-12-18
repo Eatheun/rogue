@@ -1,6 +1,10 @@
 #ifndef FLOOR_GEN_H
 #define FLOOR_GEN_H
 
+#include "../globals/cells.h"
+#include "../globals/const.h"
+#include "../headers/npc.h"
+
 #define _floorX getFloorX()
 #define _floorY getFloorY()
 #define _currRoom getCurrRoom()
@@ -22,8 +26,6 @@ static Floor currFloor;
 static Room roomsArr[MAX_ROOMS]; // For room access
 
 //////////////////////// NPC ////////////////////////
-
-#include "npc.h"
 
 NPC isNPC(int x, int y);
 NPC *getNpcsInRoom(Room room);

@@ -7,6 +7,7 @@
 #include "../globals/cells.h"
 #include "../globals/const.h"
 #include "../globals/directions.h"
+#include "../headers/end.h"
 #include "../headers/floorGen.h"
 #include "../headers/inputs.h"
 #include "../headers/lfsr.h"
@@ -163,8 +164,11 @@ int main(int argc, char **argv) {
 				// Should have closed map 
 				printFullMap();
 				printMinimap();
-			} else if ((npcRet = isNPC(_px, _py)) && openTextMode(npcRet)) {
+			} else if ((npcRet = isNPC(_px, _py)) && interactNPC(npcRet)) {
 
+			} else if (guessRoom()) {
+				while (true) if (getComm() != 0) break; 
+				break;
 			}
 			removeCursor();
 		}

@@ -54,11 +54,14 @@ typedef int Coor;
 
 #define MAX_NPCS 4
 
-//////////////////////// NPC ACTIONS ////////////////////////
+//////////////////////// TEXTBOX ////////////////////////
 
 #define TXTH 5
 #define TBOXH (TXTH + ((1 + 1) << 1))
 #define TBOXW (((MAX_SIZE + BORD_OFF) << 1) + DIST_FROM_MAINM + MAX_CORR_SIZE)
 #define TXTW (TBOXW - ((1 + 1) << 1))
+#define OPTTXTH (TXTH - 3)
+#define TITLE_OFF 1
+#define OPTTXTWSPLIT (TBOXW / 5)
 
 #endif // CONST_H

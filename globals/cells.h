@@ -7,10 +7,14 @@
 #define CYABCK "\e[48;5;116m"
 #define DRKBLUBCK "\e[48;5;17m"
 #define REDBCK "\e[48;5;196m"
+#define GRYBCK "\e[48;2;128;128;128m"
+#define PURPBCK "\e[48;2;255;0;255m"
+#define WHTBCK "\e[48;2;255;255;255m"
 
 //////////////////////// TEXT ////////////////////////
 
 #define WHTXT "\e[38;2;255;255;255m"
+#define BLKTXT "\e[38;2;0;0;0m"
 
 //////////////////////// BASIC CELLS ////////////////////////
 
