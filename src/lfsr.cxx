@@ -15,7 +15,7 @@ void setSeed(void) {
 	while (true) {
 		if (getComm() != 0) {
 			int val = _dir ^ (seed & 0xff);
-			int ret = rand(_dir) % 256;
+			int ret = rand(_dir) & 0xff;
 			unsigned bits = ret | (ret << 8) | (ret << 16) | (ret << 24);
 			seed ^= ret;
 			break;
@@ -40,7 +40,7 @@ static int lfsrRand(void) {
 }
 
 static int cantor(int x, int y) {
-	return (x + y) * (x + y + 1) / 2 + y;
+	return (((x + y) * (x + y + 1)) >> 1) + y;
 }
 
 static int cantorRand(void) {
@@ -62,7 +62,7 @@ bool chance(int numer, int denom) {
 	int split = val & 0x10;
 	val = (val >> 0x10) | split;
 	val ^= val >> 1;
-	val %= 100;
+	val &= 0x64;
 	
 	val = rand(val & 0xff);
 	for (int i = denom; i > numer; i--) {

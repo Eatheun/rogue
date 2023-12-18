@@ -37,7 +37,7 @@ void setNpcNpcType(NPC npc, int npcType) { npc->npcType = npcType; }
 NPCActions getNpcActions(NPC npc) { return npc->actions; }
 void setNpcActions(NPC npc, NPCActions actions) { npc->actions = actions; }
 int getNpcCoor(NPC npc) { return npc->pos; }
-void setNpcCoor(NPC npc, int x, int y) { npc->pos = x * 100 + y; }
+void setNpcCoor(NPC npc, int x, int y) { npc->pos = (x << 8) + y; }
 
 void printNpcCell(NPC npc) {
 	// getting the character

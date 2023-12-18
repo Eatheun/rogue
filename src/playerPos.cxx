@@ -23,7 +23,7 @@ void setPy(int ty) {
 }
 
 void removePlayer(void) {
-    printf("\e[%d;%dH", py + _offMY + 1, (px + _offMX) * 2 + 1); // Go to player position
+    printf("\e[%d;%dH", py + _offMY + 1, ((px + _offMX) << 1) + 1); // Go to player position
     if (isNPC(px, py)) {
         NPC ret = isNPC(px, py);
         printNpcCell(ret);
@@ -34,7 +34,7 @@ void removePlayer(void) {
 }
 
 void updatePlayer(void) {
-    printf("\e[%d;%dH", py + _offMY + 1, (px + _offMX) * 2 + 1); // Go to player position
+    printf("\e[%d;%dH", py + _offMY + 1, ((px + _offMX) << 1) + 1); // Go to player position
     printf(PLAYER);
     printf("\e[0m"); // reset colour
 }

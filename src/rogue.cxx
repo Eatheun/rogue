@@ -90,18 +90,18 @@ static void printInside(void) {
 				putBlock();
 			}
 		}
-		printf("\e[1B\e[%dD", 2 * (_currRoomW - 2));
+		printf("\e[1B\e[%dD", (_currRoomW - 2) << 1);
 	}
 }
 
 static void printPlayer(void) {
-	printf("\e[%d;%dH", _offMY+ _py + 1, (_offMX + _px) * 2 + 1);
+	printf("\e[%d;%dH", _offMY+ _py + 1, ((_offMX + _px) << 1) + 1);
 	printf(REDBCK); printf(WHTXT);
 	putchar('P'); putchar('l');
 }
 
 void printFullMap(void) {
-	printf("\e[%d;%dH", _offMY + 1, _offMX * 2 + 1); // Center the map
+	printf("\e[%d;%dH", _offMY + 1, (_offMX << 1) + 1); // Center the map
 
 	// Print walls
 	printWalls();
@@ -116,7 +116,7 @@ void printFullMap(void) {
 }
 
 void clearFullMap(void) {
-	printf("\e[1;%dH", MAX_SIZE * 2 + 1); // go to start of deletion
+	printf("\e[1;%dH", (MAX_SIZE << 1) + 1); // go to start of deletion
 	for (int i = 0; i < MAX_SIZE + 1; i++) {
 		printf("\e[1K"); // clear map line
 		printf("\e[1B"); // go down
@@ -141,8 +141,8 @@ int main(int argc, char **argv) {
 	
 	generateFloor();
 
-	setPx(_currRoomW / 2);
-	setPy(_currRoomH / 2);
+	setPx(_currRoomW >> 1);
+	setPy(_currRoomH >> 1);
 
 	printFullMap();
 	printMinimap();

@@ -34,23 +34,23 @@ bool move(void) {
 
 static void playerPosChange(int dirHandled, int *xChk, int *yChk) {
 	if (dirHandled == UP) {
-		setPx(_currRoomW / 2);
+		setPx(_currRoomW >> 1);
 		setPy(_currRoomH - 1);
 		setFloorY(_floorY - 1);
 		(*yChk)--;
 	} else if (dirHandled == LEFT) {
 		setPx(_currRoomW - 1);
-		setPy(_currRoomH / 2);
+		setPy(_currRoomH >> 1);
 		setFloorX(_floorX - 1);
 		(*xChk)--;
 	} else if (dirHandled == DOWN) {
-		setPx(_currRoomW / 2);
+		setPx(_currRoomW >> 1);
 		setPy(0);
 		setFloorY(_floorY + 1);
 		(*yChk)++;
 	} else if (dirHandled == RIGHT) {
 		setPx(0);
-		setPy(_currRoomH / 2);
+		setPy(_currRoomH >> 1);
 		setFloorX(_floorX + 1);
 		(*xChk)++;
 	}
@@ -81,16 +81,16 @@ bool changeRoom(void) {
 	setCurrRoom(newRoom);
 	
 	// Tracking corridors
-	int xChk = _floorX * 2 + 1;
-	int yChk = _floorY * 2 + 1;
+	int xChk = (_floorX << 1) + 1;
+	int yChk = (_floorY << 1) + 1;
 
 	// Set player position and offset
 	playerPosChange(dirHandled, &xChk, &yChk);
-	setOffMX((MAX_SIZE - _currRoomW) / 2);
-	setOffMY((MAX_CORR_SIZE + 2 - _currRoomH) / 2);
+	setOffMX((MAX_SIZE - _currRoomW) >> 1);
+	setOffMY((MAX_CORR_SIZE + 2 - _currRoomH) >> 1);
 
 	bool isHCorrUpdate = false;
-	if (xChk != _floorX * 2 + 1) isHCorrUpdate = true;
+	if (xChk != (_floorX << 1) + 1) isHCorrUpdate = true;
 
 	// Update maps and corridors
 	visitMap(_floorX, _floorY);
