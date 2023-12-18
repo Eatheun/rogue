@@ -3,17 +3,17 @@
 
 //////////////////////// COORDINATES ////////////////////////
 
-// format: 4-digit int, xxyy
-//	e.g. 1034 = (10, 34)
+// format: 16-bits, 0xXXYY
+//	e.g. 0x1034 = (10, 34) = (10 << 8) + 34
 typedef int Coor;
 
 //////////////////////// FLOOR GEN ////////////////////////
 
 #define MAX_ROOMS 9
 #define MAX_NPCS_ON_FLOOR 10
-#define MAX_RADIUS (MAX_ROOMS / 2 - 1)
-#define MAX_FLOOR_SIZE (2 * MAX_RADIUS + 1)
-#define MAX_CORR_SIZE (2 * MAX_FLOOR_SIZE + 1)
+#define MAX_RADIUS ((MAX_ROOMS >> 1) - 1)
+#define MAX_FLOOR_SIZE ((MAX_RADIUS << 1) + 1)
+#define MAX_CORR_SIZE ((MAX_FLOOR_SIZE << 1) + 1)
 #define MIN_SIZE 11
 #define MAX_SIZE 17
 
@@ -57,9 +57,9 @@ typedef int Coor;
 //////////////////////// TEXTBOX ////////////////////////
 
 #define TXTH 5
-#define TBOXH (TXTH + ((1 + 1) << 1))
+#define TBOXH (TXTH + (2 << 1))
 #define TBOXW (((MAX_SIZE + BORD_OFF) << 1) + DIST_FROM_MAINM + MAX_CORR_SIZE)
-#define TXTW (TBOXW - ((1 + 1) << 1))
+#define TXTW (TBOXW - (2 << 1))
 #define OPTTXTH (TXTH - 3)
 #define TITLE_OFF 1
 #define OPTTXTWSPLIT (TBOXW / 5)

@@ -42,17 +42,17 @@ static void handlePrintMapBlock(int i, int j, bool isOpenMap) {
 //////////////////////// MINI ////////////////////////
 
 static void printBorder(void) {
-    for (int i = 0; i < MAX_CORR_SIZE + BORD_OFF * 2; i++) {
+    for (int i = 0; i < MAX_CORR_SIZE + (BORD_OFF << 1); i++) {
         printf(MINM_BORDER);
     }
 }
 
 static void moveDown(void) {
-    printf("\e[1B\e[%dD", MAX_CORR_SIZE + BORD_OFF * 2);
+    printf("\e[1B\e[%dD", MAX_CORR_SIZE + (BORD_OFF << 1));
 }
 
 void printMinimap(void) {
-    printf("\e[1;%dH", MAX_SIZE * 2 + DIST_FROM_MAINM + ESC_OFF); // Go to first line
+    printf("\e[1;%dH", (MAX_SIZE << 1) + DIST_FROM_MAINM + ESC_OFF); // Go to first line
     setStdClr();
 
     // Top border
@@ -79,21 +79,21 @@ void printMinimap(void) {
 }
 
 void remPrevRoomMinM(int prevFx, int prevFy) {
-    printf("\e[%d;%dH", (prevFy + 1) * 2 + ESC_OFF, (MAX_SIZE) * 2 + DIST_FROM_MAINM + ESC_OFF + BORD_OFF); // go to prev room y
-    printf("\e[%dC", 1 + prevFx * 2); // shift across
+    printf("\e[%d;%dH", ((prevFy + 1) << 1) + ESC_OFF, (MAX_SIZE << 1) + DIST_FROM_MAINM + ESC_OFF + BORD_OFF); // go to prev room y
+    printf("\e[%dC", 1 + (prevFx << 1)); // shift across
     printf(MINM_ROOM);
     printf("\e[0m");
 }
 
 void updateMinM(int newFx, int newFy, int corrX, int corrY, bool isHCorrUpdate) {
     // Printing room
-    printf("\e[%d;%dH", (newFy + 1) * 2 + ESC_OFF, (MAX_SIZE) * 2 + DIST_FROM_MAINM + ESC_OFF + BORD_OFF); // go to new room y
-    printf("\e[%dC", newFx * 2 + ESC_OFF); // shift across
+    printf("\e[%d;%dH", ((newFy + 1) << 1) + ESC_OFF, (MAX_SIZE << 1) + DIST_FROM_MAINM + ESC_OFF + BORD_OFF); // go to new room y
+    printf("\e[%dC", (newFx << 1) + ESC_OFF); // shift across
     printf(MINM_CURR_ROOM);
     setStdClr();
 
     // Printing corridor
-    printf("\e[%d;%dH", corrY + ESC_OFF + BORD_OFF, (MAX_SIZE) * 2 + DIST_FROM_MAINM + ESC_OFF + BORD_OFF); // go to corr y
+    printf("\e[%d;%dH", corrY + ESC_OFF + BORD_OFF, (MAX_SIZE << 1) + DIST_FROM_MAINM + ESC_OFF + BORD_OFF); // go to corr y
     printf("\e[%dC", corrX); // shift across
     if (isHCorrUpdate) {
         printf(MINM_HCORR);
@@ -106,7 +106,7 @@ void updateMinM(int newFx, int newFy, int corrX, int corrY, bool isHCorrUpdate) 
 //////////////////////// OPEN ////////////////////////
 
 static void printOpenBorder(void) {
-    for (int i = 0; i < MAX_CORR_SIZE + BORD_OFF * 2; i++) {
+    for (int i = 0; i < MAX_CORR_SIZE + (BORD_OFF << 1); i++) {
         printf(OPNM_BORDER);
         printf("\e[1A");
     }
@@ -162,7 +162,7 @@ static void printNpcRec(Room curr, Room prev, int currFx, int currFy) {
     }
 
     // Find start of the room to edit
-    printf("\e[%d;%dH", (currFy * 2 + 2) * 2 + 1, (currFx * 2 + 2) * 2 + 1);
+    printf("\e[%d;%dH", (((currFy << 1) + 2) << 1) + 1, (((currFx << 1) + 2) << 1) + 1);
 
     // Colours!
     if (curr == _currRoom) {

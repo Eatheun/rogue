@@ -111,7 +111,7 @@ static void assignNPCs(Room room) {
 }
 
 NPC isNPC(int x, int y) {
-	int coorXY = x * 100 + y;
+	Coor coorXY = (x << 8) + y;
 	Room currRoom = currFloor->currRoom;
 	for (int i = 0; i < currRoom->numNPCs; i++) {
 		NPC currEn = currRoom->npcs[i];
@@ -263,8 +263,8 @@ void generateFloor(void) {
 	map[floorY][floorX] = true;
 
 	// Set the offset
-	offMX = (MAX_SIZE - _currRoomW) / 2;
-	offMY = (MAX_CORR_SIZE + 2 - _currRoomH) / 2;
+	offMX = (MAX_SIZE - _currRoomW) >> 1;
+	offMY = (MAX_CORR_SIZE + 2 - _currRoomH) >> 1;
 }
 
 Room getCurrRoom(void) { return currFloor->currRoom; }
@@ -337,7 +337,7 @@ void RoomFree(Room newRoom) {
 }
 
 bool isDoor(int x, int y) {
-	Coor currXY = x * 100 + y;
+	Coor currXY = (x << 8) + y;
 	for (int i = 0; i < MAX_DIRS; i++) {
 		if (currXY != 0 && _currRoom->doors[i] == currXY) {
 			return true;
@@ -352,13 +352,13 @@ void makeDoor(Room newRoom, int doorNum) {
 	}
 	
 	if (doorNum == UP) {
-		newRoom->doors[doorNum] = newRoom->roomW / 2 * 100;
+		newRoom->doors[doorNum] = (newRoom->roomW >> 1) << 8;
 	} else if (doorNum == LEFT) {
-		newRoom->doors[doorNum] = newRoom->roomH / 2;
+		newRoom->doors[doorNum] = (newRoom->roomH >> 1);
 	} else if (doorNum == DOWN) {
-		newRoom->doors[doorNum] = newRoom->roomW / 2 * 100 + newRoom->roomH - 1;
+		newRoom->doors[doorNum] = ((newRoom->roomW >> 1) << 8) + newRoom->roomH - 1;
 	} else if (doorNum == RIGHT) {
-		newRoom->doors[doorNum] = (newRoom->roomW - 1) * 100 + newRoom->roomH / 2;
+		newRoom->doors[doorNum] = ((newRoom->roomW - 1) << 8) + (newRoom->roomH >> 1);
 	}
 }
 
@@ -411,7 +411,7 @@ Coor getRoomXY(Room room) {
 	Room start = currFloor->startRoom;
 	int floorX = floorY = MAX_RADIUS;
 	if (getRoomXYRec(start, start, room, &floorX, &floorY)) {
-		return floorX * 100 + floorY;
+		return (floorX << 8) + floorY;
 	}
 
 	return 0; // should never happen
