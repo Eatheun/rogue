@@ -8,6 +8,8 @@
 #define DRKBLUBCK "\e[48;5;17m"
 #define REDBCK "\e[48;5;196m"
 #define GRYBCK "\e[48;2;128;128;128m"
+#define PURPBCK "\e[48;2;255;0;255m"
+#define WHTBCK "\e[48;2;255;255;255m"
 
 //////////////////////// TEXT ////////////////////////
 

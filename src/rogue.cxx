@@ -167,8 +167,8 @@ int main(int argc, char **argv) {
 			} else if ((npcRet = isNPC(_px, _py)) && interactNPC(npcRet)) {
 
 			} else if (guessRoom()) {
-				// Sleep(2000);
-				// break;
+				while (true) if (getComm() != 0) break; 
+				break;
 			}
 			removeCursor();
 		}
