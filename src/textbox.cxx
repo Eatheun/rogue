@@ -128,10 +128,10 @@ bool openOptionTBox(char *text, char *title) {
                 closeTBox();
                 break;
             } else if ((ret = handleAllDir(&tempX, &tempY)) != MAX_DIRS) {
-                if (ret == LEFT) {
+                if (ret == LEFT && isYes == false) {
                     changeOption(setSelectClr, setUnselectClr);
                     isYes = true;
-                } else if (ret == RIGHT) {
+                } else if (ret == RIGHT && isYes == true) {
                     changeOption(setUnselectClr, setSelectClr);
                     isYes = false;
                 }
