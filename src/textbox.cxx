@@ -89,24 +89,20 @@ static void chaOptSpace(void) {
     for (int i = 0; i < offset; i++) putchar(' ');
 }
 
-static void changeOptionYes(bool *isYes) {
-    printf("\e[%d;1H", MAX_SIZE + BORD_OFF + TITLE_OFF + OPTTXTH + 1 + ESC_OFF); // set cursor position
-    printf("\e[%dC", OPTTXTWSPLIT);
-    printf(GRYBCK); printf(BLKTXT); chaOptSpace(); printf("YES"); chaOptSpace(); 
-    printf("\e[%dC", OPTTXTWSPLIT);
-    printf(BLKBCK); printf(WHTXT); chaOptSpace(); printf("NO"); chaOptSpace();
-
-    *isYes = true;
+static void setSelectClr(void) {
+    printf(GRYBCK); printf(BLKTXT);
 }
 
-static void changeOptionNo(bool *isYes) {
-    printf("\e[%d;1H", MAX_SIZE + BORD_OFF + TITLE_OFF + OPTTXTH + 1 + ESC_OFF); // set cursor position
-    printf("\e[%dC", OPTTXTWSPLIT);
-    printf(BLKBCK); printf(WHTXT); chaOptSpace(); printf("YES"); chaOptSpace(); 
-    printf("\e[%dC", OPTTXTWSPLIT);
-    printf(GRYBCK); printf(BLKTXT); chaOptSpace(); printf("NO"); chaOptSpace();
+static void setUnselectClr (void) {
+    printf(BLKBCK); printf(WHTXT);
+}
 
-    *isYes = false;
+static void changeOption(void (*setYesClr)(void), void (*setNoClr)(void)) {
+    printf("\e[%d;2H", MAX_SIZE + BORD_OFF + TITLE_OFF + OPTTXTH + 1 + ESC_OFF); // set cursor position
+    printf("\e[%dC", OPTTXTWSPLIT);
+    setYesClr(); chaOptSpace(); printf("YES"); chaOptSpace(); 
+    printf("\e[%dC", TBOXW - (OPTTXTWSPLIT << 2));
+    setNoClr(); chaOptSpace(); printf("NO "); chaOptSpace();
 }
 
 // Note that atm we only accept boolean responses
@@ -120,7 +116,7 @@ bool openOptionTBox(char *text, char *title) {
 
     // Gotta print the yes/no options
     bool isYes = true;
-    changeOptionYes(&isYes);
+    changeOption(setSelectClr, setUnselectClr);
     printf("\e[%d;1H", MAX_SIZE + ESC_OFF);
 
     // wait for the player response
@@ -133,9 +129,11 @@ bool openOptionTBox(char *text, char *title) {
                 break;
             } else if ((ret = handleAllDir(&tempX, &tempY)) != MAX_DIRS) {
                 if (ret == LEFT) {
-                    changeOptionYes(&isYes);
+                    changeOption(setSelectClr, setUnselectClr);
+                    isYes = true;
                 } else if (ret == RIGHT) {
-                    changeOptionNo(&isYes);
+                    changeOption(setUnselectClr, setSelectClr);
+                    isYes = false;
                 }
                 printf("\e[%d;1H", MAX_SIZE + ESC_OFF);
             }

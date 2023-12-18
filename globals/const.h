@@ -62,6 +62,6 @@ typedef int Coor;
 #define TXTW (TBOXW - ((1 + 1) << 1))
 #define OPTTXTH (TXTH - 3)
 #define TITLE_OFF 1
-#define OPTTXTWSPLIT (TBOXW / 5 + 1)
+#define OPTTXTWSPLIT (TBOXW / 5)
 
 #endif // CONST_H
