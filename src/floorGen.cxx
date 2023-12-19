@@ -33,21 +33,6 @@ struct room {
 
 //////////////////////// NPC ////////////////////////
 
-static void arrayifyRooms(Room curr, Room prev, int *index) {
-	if (curr == NULL || *index >= MAX_ROOMS) {
-		return;
-	}
-
-	roomsArr[*index] = curr;
-	(*index)++;
-
-	for (int i = 0; i < MAX_DIRS; i++) {
-		Room nextRoom = curr->adj[i];
-		if (nextRoom == prev) continue;
-		arrayifyRooms(nextRoom, curr, index);
-	}
-}
-
 static void copyToNpcText(char *npcText, const char textToCopy[]) {
     npcText = (char *) realloc(npcText, strlen(npcText) + strlen(textToCopy) + 1);
     strcat(npcText, textToCopy);
@@ -100,11 +85,6 @@ static void assignNPCs(Room room) {
 	// Track the NPCs chosen and the rooms
 	bool isChosenNpc[NUM_NPC_TYPES];
 	memset(isChosenNpc, false, NUM_NPC_TYPES * sizeof(bool));
-
-	// Array-ify the rooms
-	for (int i = 0; i < MAX_ROOMS; i++) roomsArr[i] = NULL;
-	int index = 0;
-	arrayifyRooms(room, room, &index);
 
 	// Assign 
 	for (int i = 0; i < MAX_NPCS_ON_FLOOR; i++) {
@@ -206,6 +186,21 @@ static bool isValidRoom(int tx, int ty) {
 	return isValidTx && isValidTy;
 }
 
+static void arrayifyRooms(Room curr, Room prev, int *index) {
+	if (curr == NULL || *index >= MAX_ROOMS) {
+		return;
+	}
+
+	roomsArr[*index] = curr;
+	(*index)++;
+
+	for (int i = 0; i < MAX_DIRS; i++) {
+		Room nextRoom = curr->adj[i];
+		if (nextRoom == prev) continue;
+		arrayifyRooms(nextRoom, curr, index);
+	}
+}
+
 static Room generateFloorRec(Room newRoom, Room prevRoom, int prevX, int prevY, int *limit, int prevDoor, int prob) {
 	if (*limit >= MAX_ROOMS || newRoom == NULL) {
 		return NULL;
@@ -271,13 +266,21 @@ void generateFloor(void) {
 	// Generate the rooms and assign NPCs
 	int limit = 0;
 	Room seededRoom = generateFloorRec(start, start, floorX, floorY, &limit, MAX_DIRS, 6);
+	
+	// Array-ify the rooms
+	for (int i = 0; i < MAX_ROOMS; i++) roomsArr[i] = NULL;
+	int index = 0;
+	arrayifyRooms(start, start, &index);
+
+	// Assign the startRoom and endRoom
 	currFloor->startRoom = seededRoom;
+	currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
+	while (currFloor->endRoom == NULL) currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
+
+	// Assign the NPCs to room and position player to start
 	assignNPCs(seededRoom);
 	setCurrRoom(seededRoom);
 
-	// Assign the endRoom
-	currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
-	while (currFloor->endRoom == NULL) currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
 
 	// Clear the map for player exploration
 	for (int i = 0; i < MAX_FLOOR_SIZE; i++) {
