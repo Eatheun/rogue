@@ -33,9 +33,9 @@ struct room {
 
 //////////////////////// NPC ////////////////////////
 
-static void copyToNpcText(char *npcText, const char textToCopy[]) {
-    npcText = (char *) realloc(npcText, strlen(npcText) + strlen(textToCopy) + 1);
-    strcat(npcText, textToCopy);
+static void copyToNpcText(char **npcText, const char textToCopy[]) {
+    *npcText = (char *) realloc(*npcText, strlen(*npcText) + strlen(textToCopy) + 1);
+    strcat(*npcText, textToCopy);
 }
 
 static char *genNpcText(Room npcRoom, NPC npc) {
@@ -47,10 +47,10 @@ static char *genNpcText(Room npcRoom, NPC npc) {
     bool isRight = (npcRoomCoor >> 8) < (endRoomCoor >> 8);
 
     char *npcText = (char *) malloc(sizeof(char)); npcText[0] = '\0';
-    if (isUp) copyToNpcText(npcText, "The room is above. ");
-    if (isLeft) copyToNpcText(npcText, "The room is to the left. ");
-    if (isDown) copyToNpcText(npcText, "The room is below. ");
-    if (isRight) copyToNpcText(npcText, "The room is to the right. ");
+    if (isUp) copyToNpcText(&npcText, "The room is above. ");
+    if (isLeft) copyToNpcText(&npcText, "The room is to the left. ");
+    if (isDown) copyToNpcText(&npcText, "The room is below. ");
+    if (isRight) copyToNpcText(&npcText, "The room is to the right. ");
     
     return npcText;
 }
@@ -165,19 +165,15 @@ Floor FloorNew(void) {
 	return newFloor;
 }
 
-static void FloorFreeRec(Room newRoom, Room prev) {
-	if (newRoom == NULL) {
-		return;
-	}
+static void FloorFreeRec(Room curr, Room prev) {
+	if (curr == NULL) return;
 	
 	for (int i = 0; i < MAX_DIRS; i++) {
-		Room nextRoom = getAdjRoom(newRoom, i);
-		if (nextRoom == prev) {
-			continue;
-		}
-		FloorFreeRec(nextRoom, newRoom);
+		Room nextRoom = getAdjRoom(curr, i);
+		if (nextRoom == prev) continue;
+		FloorFreeRec(nextRoom, curr);
 	}
-	RoomFree(newRoom);
+	RoomFree(curr);
 }
 
 void FloorClear(void) {
@@ -411,7 +407,7 @@ Room RoomNew(void) {
 }
 
 void RoomFree(Room newRoom) {
-	if (newRoom == NULL) return;
+	if (newRoom == NULL || newRoom->npcs == NULL) return;
 
 	// Free enemies
 	for (int i = 0; i < MAX_NPCS; i++) {
