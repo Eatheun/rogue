@@ -30,45 +30,60 @@ static Room roomsArr[MAX_ROOMS]; // For room access
 NPC isNPC(int x, int y);
 NPC *getNpcsInRoom(Room room);
 
-//////////////////////// FLOORS ////////////////////////
+//////////////////////// FLOOR METADTA ////////////////////////
 
 int getCurrRoomH(void);
 void setCurrRoomH(int tH);
+
 int getCurrRoomW(void);
 void setCurrRoomW(int tW);
+
 int getFloorX(void);
 void setFloorX(int tx);
+
 int getFloorY(void);
 void setFloorY(int ty);
-Floor FloorNew(void);
-void FloorClear(void);
-void generateFloor(void);
+
 Room getCurrRoom(void);
 void setCurrRoom(Room newRoom);
+
 Room getStartRoom(void);
 void setStartRoom(Room newRoom);
+
 Room getEndRoom(void);
 void setEndRoom(Room newRoom);
 
-//////////////////////// OFFSET ////////////////////////
+//////////////////////// FLOOR GEN ////////////////////////
+
+Floor FloorNew(void);
+void FloorClear(void);
+void generateFloor(void);
+
+//////////////////////// MAP OFFSET ////////////////////////
 
 int getOffMX(void);
 void setOffMX(int offx);
+
 int getOffMY(void);
 void setOffMY(int offy);
 
-//////////////////////// ROOMS ////////////////////////
+//////////////////////// ROOM METADATA ////////////////////////
+
+Room getAdjRoom(Room newRoom, int doorNum);
+void setAdjRoom(Room r1, Room r2, int doorNum);
+
+int getRoomH(Room room);
+int getRoomW(Room room);
+
+Coor getRoomXY(Room room);
+bool isInEndRoom(void);
+
+//////////////////////// ROOM GEN ////////////////////////
 
 Room RoomNew(void);
 void RoomFree(Room newRoom);
 bool isDoor(int x, int y);
 void makeDoor(Room newRoom, int doorNum);
-Room getAdjRoom(Room newRoom, int doorNum);
-void setAdjRoom(Room r1, Room r2, int doorNum);
-int getRoomH(Room room);
-int getRoomW(Room room);
-Coor getRoomXY(Room room);
-bool isInEndRoom(void);
 
 //////////////////////// MAP ////////////////////////
 
