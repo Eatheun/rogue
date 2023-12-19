@@ -362,9 +362,10 @@ static bool getRoomXYRec(Room curr, Room prev, Room goal, int *currFX, int *curr
 
 Coor getRoomXY(Room room) {
 	Room start = currFloor->startRoom;
-	int currFX, currFY = MAX_RADIUS;
+	int currFX = MAX_RADIUS;
+	int currFY = MAX_RADIUS;
 	if (getRoomXYRec(start, start, room, &currFX, &currFY)) {
-		return (floorX << 8) + floorY;
+		return (currFX << 8) + currFY;
 	}
 
 	return 0; // should never happen
