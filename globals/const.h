@@ -57,7 +57,7 @@ typedef int Coor;
 //////////////////////// TEXTBOX ////////////////////////
 
 #define TXTH 5
-#define TBOXH (TXTH + (2 << 1))
+#define TBOXH (TXTH + (BORD_OFF << 1) + TITLE_OFF)
 #define TBOXW (((MAX_SIZE + BORD_OFF) << 1) + DIST_FROM_MAINM + MAX_CORR_SIZE)
 #define TXTW (TBOXW - (2 << 1))
 #define OPTTXTH (TXTH - 3)

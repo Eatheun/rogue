@@ -289,15 +289,14 @@ void generateFloor(void) {
 	int index = 0;
 	arrayifyRooms(start, start, &index);
 
-	// Assign the startRoom and endRoom
+	// Assign the startRoom, endRoom and currRoom
 	currFloor->startRoom = seededRoom;
 	currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
 	while (currFloor->endRoom == NULL) currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
-
-	// Assign the NPCs to room and position player to start
-	assignNPCs(seededRoom);
 	setCurrRoom(seededRoom);
 
+	// Assign the NPCs to room
+	assignNPCs(seededRoom);
 
 	// Clear the map for player exploration
 	for (int i = 0; i < MAX_FLOOR_SIZE; i++) {
