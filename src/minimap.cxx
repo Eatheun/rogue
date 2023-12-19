@@ -80,7 +80,7 @@ void printMinimap(void) {
 
 void remPrevRoomMinM(int prevFx, int prevFy) {
     printf("\e[%d;%dH", ((prevFy + 1) << 1) + ESC_OFF, (MAX_SIZE << 1) + DIST_FROM_MAINM + ESC_OFF + BORD_OFF); // go to prev room y
-    printf("\e[%dC", 1 + (prevFx << 1)); // shift across
+    printf("\e[%dC", (prevFx << 1) + ESC_OFF); // shift across
     printf(MINM_ROOM);
     printf("\e[0m");
 }
