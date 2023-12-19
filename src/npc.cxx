@@ -39,6 +39,8 @@ void setNpcActions(NPC npc, NPCActions actions) { npc->actions = actions; }
 int getNpcCoor(NPC npc) { return npc->pos; }
 void setNpcCoor(NPC npc, int x, int y) { npc->pos = (x << 8) + y; }
 
+//////////////////////// TEXT ////////////////////////
+
 void printNpcCell(NPC npc) {
 	// getting the character
 	char npcCell[128];
@@ -48,8 +50,6 @@ void printNpcCell(NPC npc) {
 	// print
 	printf("%s", npcCell);
 }
-
-//////////////////////// TEXT ////////////////////////
 
 static char *getNpcTypeText(NPC npc, char typeText[]) {
     // getting and printing type title

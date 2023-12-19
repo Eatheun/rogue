@@ -48,9 +48,34 @@ static void arrayifyRooms(Room curr, Room prev, int *index) {
 	}
 }
 
+static void copyToNpcText(char *npcText, const char textToCopy[]) {
+    npcText = (char *) realloc(npcText, strlen(npcText) + strlen(textToCopy) + 1);
+    strcat(npcText, textToCopy);
+}
+
+static char *genNpcText(Room npcRoom, NPC npc) {
+    Coor npcRoomCoor = getRoomXY(npcRoom);
+    Coor endRoomCoor = getRoomXY(_endRoom);
+    bool isUp = (npcRoomCoor & 0xff) > (endRoomCoor & 0xff);
+    bool isLeft = (npcRoomCoor >> 8) > (endRoomCoor >> 8);
+    bool isDown = (npcRoomCoor & 0xff) < (endRoomCoor & 0xff);
+    bool isRight = (npcRoomCoor >> 8) < (endRoomCoor >> 8);
+
+    char *npcText = (char *) malloc(sizeof(char)); npcText[0] = '\0';
+    if (isUp) copyToNpcText(npcText, "The room is above. ");
+    if (isLeft) copyToNpcText(npcText, "The room is to the left. ");
+    if (isDown) copyToNpcText(npcText, "The room is below. ");
+    if (isRight) copyToNpcText(npcText, "The room is to the right. ");
+    
+    return npcText;
+}
+
 static void assignNpcToRoom(Room room, NPC npc, int npcInd) {
 	// Append to NPCs
 	room->npcs[npcInd] = npc;
+
+	// Need some proper text for the NPC
+	setActionsText(getNpcActions(npc), genNpcText(room, npc));
 
 	// Set the coordinates
 	int roomH = room->roomH;
@@ -103,10 +128,6 @@ static void assignNPCs(Room room) {
 				break;
 			}
 		}
-
-		// SNEAKY!!!
-		currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
-		while (currFloor->endRoom == NULL) currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
 	}
 }
 
@@ -250,9 +271,13 @@ void generateFloor(void) {
 	// Generate the rooms and assign NPCs
 	int limit = 0;
 	Room seededRoom = generateFloorRec(start, start, floorX, floorY, &limit, MAX_DIRS, 6);
+	currFloor->startRoom = seededRoom;
 	assignNPCs(seededRoom);
 	setCurrRoom(seededRoom);
-	currFloor->startRoom = seededRoom;
+
+	// Assign the endRoom
+	currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
+	while (currFloor->endRoom == NULL) currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
 
 	// Clear the map for player exploration
 	for (int i = 0; i < MAX_FLOOR_SIZE; i++) {
@@ -385,15 +410,10 @@ static bool getRoomXYRec(Room curr, Room prev, Room goal, int *floorX, int *floo
 		int tempX = *floorX;
 		int tempY = *floorY;
 
-		if (i == UP) {
-			(*floorY)--;
-		} else if (i == LEFT) {
-			(*floorX)--;
-		} else if (i == DOWN) {
-			(*floorY)++;
-		} else if (i == RIGHT) {
-			(*floorX)++;
-		}
+		if (i == UP) (*floorY)--;
+		if (i == LEFT) (*floorX)--;
+		if (i == DOWN) (*floorY)++;
+		if (i == RIGHT) (*floorX)++;
 
 		if (getRoomXYRec(next, curr, goal, floorX, floorY)) {
 			return true;

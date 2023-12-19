@@ -10,8 +10,8 @@
 #define _currRoom getCurrRoom()
 #define _currRoomH getCurrRoomH()
 #define _currRoomW getCurrRoomW()
-#define _startRoom getStartRoom(void)
-#define _endRoom getEndRoom(void)
+#define _startRoom getStartRoom()
+#define _endRoom getEndRoom()
 #define _offMX getOffMX()
 #define _offMY getOffMY()
 
