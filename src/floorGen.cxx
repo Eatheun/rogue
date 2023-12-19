@@ -333,7 +333,7 @@ void setAdjRoom(Room r1, Room r2, int doorNum) {
 int getRoomH(Room room) { return room->roomH; };
 int getRoomW(Room room) { return room->roomW; };
 
-static bool getRoomXYRec(Room curr, Room prev, Room goal, int *floorX, int *floorY) {
+static bool getRoomXYRec(Room curr, Room prev, Room goal, int *currFX, int *currFY) {
 	if (curr == NULL) return false;
 
 	if (curr == goal) return true;
@@ -341,20 +341,20 @@ static bool getRoomXYRec(Room curr, Room prev, Room goal, int *floorX, int *floo
 	for (int i = 0; i < MAX_DIRS; i++) {
 		Room next = curr->adj[i];
 		if (next == prev) continue;
-		int tempX = *floorX;
-		int tempY = *floorY;
+		int tempX = *currFX;
+		int tempY = *currFY;
 
-		if (i == UP) (*floorY)--;
-		if (i == LEFT) (*floorX)--;
-		if (i == DOWN) (*floorY)++;
-		if (i == RIGHT) (*floorX)++;
+		if (i == UP) (*currFY)--;
+		if (i == LEFT) (*currFX)--;
+		if (i == DOWN) (*currFY)++;
+		if (i == RIGHT) (*currFX)++;
 
-		if (getRoomXYRec(next, curr, goal, floorX, floorY)) {
+		if (getRoomXYRec(next, curr, goal, currFX, currFY)) {
 			return true;
 		} else {
 			// Revert back our failures
-			(*floorX) = tempX;
-			(*floorY) = tempY;
+			(*currFX) = tempX;
+			(*currFY) = tempY;
 		}
 	}
 
@@ -363,8 +363,8 @@ static bool getRoomXYRec(Room curr, Room prev, Room goal, int *floorX, int *floo
 
 Coor getRoomXY(Room room) {
 	Room start = currFloor->startRoom;
-	int floorX = floorY = MAX_RADIUS;
-	if (getRoomXYRec(start, start, room, &floorX, &floorY)) {
+	int currFX, currFY = MAX_RADIUS;
+	if (getRoomXYRec(start, start, room, &currFX, &currFY)) {
 		return (floorX << 8) + floorY;
 	}
 
