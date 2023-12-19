@@ -6,7 +6,7 @@
 
 #define GCC_PATH "C:\\msys64\\ucrt64\\bin\\gcc"
 
-#define WHITESPACE 80
+#define WHITESPACE 32
 
 #define RESET "\e[0m"
 #define WHTXT "\e[38;5;255m"

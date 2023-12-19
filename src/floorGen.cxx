@@ -305,6 +305,7 @@ void generateFloor(void) {
 		}
 	}
 	map[floorY][floorX] = true;
+	printf("(%d, %d)\n", floorX, floorY);
 
 	// Set the offset
 	offMX = (MAX_SIZE - _currRoomW) >> 1;
