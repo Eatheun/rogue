@@ -38,6 +38,18 @@ static void copyToNpcText(char **npcText, const char textToCopy[]) {
     strcat(*npcText, textToCopy);
 }
 
+static char *genDirectionalClue() {
+	return NULL;
+}
+
+static char *genDistanceClue() {
+	return NULL;
+}
+
+static char *genHotColdClue() {
+	return NULL;
+}
+
 static char *genNpcText(Room npcRoom, NPC npc) {
     Coor npcRoomCoor = getRoomXY(npcRoom);
     Coor endRoomCoor = getRoomXY(_endRoom);
@@ -47,6 +59,7 @@ static char *genNpcText(Room npcRoom, NPC npc) {
     bool isRight = (npcRoomCoor >> 8) < (endRoomCoor >> 8);
 
     char *npcText = (char *) malloc(sizeof(char)); npcText[0] = '\0';
+	copyToNpcText(&npcText, "This place feels like a dungeon. I can hardly breathe. My senses are diminishing. And the neighbour next door smells like shit! If you want, I'll be of your utmost assistance. I'll do anything! Just please...get me out of here. I'm begging you. ");
     if (isUp) copyToNpcText(&npcText, "The room is above. ");
     if (isLeft) copyToNpcText(&npcText, "The room is to the left. ");
     if (isDown) copyToNpcText(&npcText, "The room is below. ");

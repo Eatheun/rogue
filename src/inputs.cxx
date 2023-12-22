@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <conio.h>
 
 #include "../globals/const.h"
@@ -62,4 +63,12 @@ int handleAllDir(int *tx, int *ty) {
     }
 
     return ret;
+}
+
+void awaitRes(char input) {
+    while (true) {
+        if (getComm() == input) {
+            break;
+        }
+    }
 }

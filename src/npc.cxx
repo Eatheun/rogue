@@ -68,12 +68,8 @@ bool interactNPC(NPC npc) {
         return false;
     }
 
-    while (true) {
-        if (getComm() == 'e') {
-            closeTBox();
-            break;
-        }
-    }
+    awaitRes('e');
+    closeTBox();
 
     return true;
 }

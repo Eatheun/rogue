@@ -55,7 +55,6 @@ static void printTBoxTxtLine(char *text, int *index) {
     putchar(' '); putchar('#');
     putchar('\n'); // go down to start of next line
 }
-
 void printTBox(char *text, char *title) {
     printf("\e[%d;1", MAX_SIZE + BORD_OFF + ESC_OFF); // position cursor below all the fluff
     for (int i = 0; i < (DIST_FROM_MAINM >> 1); i++) putchar('\n');
@@ -67,15 +66,24 @@ void printTBox(char *text, char *title) {
     printTBoxBorder();
     printTBoxTitle(title);
 
-    // Middle text block
-    int index = 0;
-    for (int i = 0; i < TXTH; i++) printTBoxTxtLine(text, &index);
+    // Middle block
+    for (int i = 0; i < TXTH; i++) printTBoxFiller();
 
     // Bottom part
     printTBoxBorder();
 
+    // Print text
+    printf("\e[%dF", TXTH + BORD_OFF); // position cursor back to text part
+    int index = 0;
+    for (int i = 0; i < TXTH; i++) printTBoxTxtLine(text, &index);
+    while (text[index] != '\0') {
+        awaitRes('e');
+        printf("\e[%dF", TXTH);
+        for (int i = 0; i < TXTH; i++) printTBoxTxtLine(text, &index);
+    }
+
     // Go up
-    printf("\e[%dF", TBOXH);
+    printf("\e[%dF", TXTH + TITLE_OFF + BORD_OFF);
 }
 
 void closeTBox(void) {
