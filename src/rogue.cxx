@@ -103,16 +103,12 @@ static void printPlayer(void) {
 void printFullMap(void) {
 	printf("\e[%d;%dH", _offMY + 1, (_offMX << 1) + 1); // Center the map
 
-	// Print walls
+	// Print walls, inside, then player
 	printWalls();
-
-	// Print inside
 	printInside();
-
-	// Print player
 	printPlayer();
 
-	printf("\e[0m");
+	printf("\e[0m"); // reset colour
 }
 
 void clearFullMap(void) {

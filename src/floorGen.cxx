@@ -33,24 +33,34 @@ struct room {
 
 //////////////////////// NPC ////////////////////////
 
-static void arrayifyRooms(Room curr, Room prev, int *index) {
-	if (curr == NULL || *index >= MAX_ROOMS) {
-		return;
-	}
+static void copyToNpcText(char **npcText, const char textToCopy[]) {
+    *npcText = (char *) realloc(*npcText, strlen(*npcText) + strlen(textToCopy) + 1);
+    strcat(*npcText, textToCopy);
+}
 
-	roomsArr[*index] = curr;
-	(*index)++;
+static char *genNpcText(Room npcRoom, NPC npc) {
+    Coor npcRoomCoor = getRoomXY(npcRoom);
+    Coor endRoomCoor = getRoomXY(_endRoom);
+    bool isUp = (npcRoomCoor & 0xff) > (endRoomCoor & 0xff);
+    bool isLeft = (npcRoomCoor >> 8) > (endRoomCoor >> 8);
+    bool isDown = (npcRoomCoor & 0xff) < (endRoomCoor & 0xff);
+    bool isRight = (npcRoomCoor >> 8) < (endRoomCoor >> 8);
 
-	for (int i = 0; i < MAX_DIRS; i++) {
-		Room nextRoom = curr->adj[i];
-		if (nextRoom == prev) continue;
-		arrayifyRooms(nextRoom, curr, index);
-	}
+    char *npcText = (char *) malloc(sizeof(char)); npcText[0] = '\0';
+    if (isUp) copyToNpcText(&npcText, "The room is above. ");
+    if (isLeft) copyToNpcText(&npcText, "The room is to the left. ");
+    if (isDown) copyToNpcText(&npcText, "The room is below. ");
+    if (isRight) copyToNpcText(&npcText, "The room is to the right. ");
+    
+    return npcText;
 }
 
 static void assignNpcToRoom(Room room, NPC npc, int npcInd) {
 	// Append to NPCs
 	room->npcs[npcInd] = npc;
+
+	// Need some proper text for the NPC
+	setActionsText(getNpcActions(npc), genNpcText(room, npc));
 
 	// Set the coordinates
 	int roomH = room->roomH;
@@ -67,7 +77,6 @@ static void assignNpcToRoom(Room room, NPC npc, int npcInd) {
 	);
 }
 
-// Note, we also assign the end room
 static void assignNPCs(Room room) {
 	// Set the total
 	currFloor->totalNpcs = MAX_NPCS_ON_FLOOR;
@@ -75,11 +84,6 @@ static void assignNPCs(Room room) {
 	// Track the NPCs chosen and the rooms
 	bool isChosenNpc[NUM_NPC_TYPES];
 	memset(isChosenNpc, false, NUM_NPC_TYPES * sizeof(bool));
-
-	// Array-ify the rooms
-	for (int i = 0; i < MAX_ROOMS; i++) roomsArr[i] = NULL;
-	int index = 0;
-	arrayifyRooms(room, room, &index);
 
 	// Assign 
 	for (int i = 0; i < MAX_NPCS_ON_FLOOR; i++) {
@@ -103,10 +107,6 @@ static void assignNPCs(Room room) {
 				break;
 			}
 		}
-
-		// SNEAKY!!!
-		currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
-		while (currFloor->endRoom == NULL) currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
 	}
 }
 
@@ -127,16 +127,34 @@ NPC *getNpcsInRoom(Room room) {
 	return room->npcs;
 }
 
-//////////////////////// FLOORS ////////////////////////
+//////////////////////// FLOOR METADTA ////////////////////////
 
 int getCurrRoomH(void) { return currFloor->currRoomH; }
 void setCurrRoomH(int tH) { currFloor->currRoomH = tH; }
+
 int getCurrRoomW(void) { return currFloor->currRoomW; }
 void setCurrRoomW(int tW) { currFloor->currRoomW = tW; }
+
 int getFloorX(void) { return floorX; }
 void setFloorX(int tx) { floorX = tx; }
+
 int getFloorY(void) { return floorY; }
 void setFloorY(int ty) { floorY = ty; }
+
+Room getCurrRoom(void) { return currFloor->currRoom; }
+void setCurrRoom(Room newRoom) {
+    currFloor->currRoom = newRoom;
+    setCurrRoomH(newRoom->roomH);
+    setCurrRoomW(newRoom->roomW);
+}
+
+Room getStartRoom(void) { return currFloor->startRoom; }
+void setStartRoom(Room newRoom) { currFloor->startRoom = newRoom; }
+
+Room getEndRoom(void) { return currFloor->endRoom; }
+void setEndRoom(Room newRoom) { currFloor->endRoom = newRoom; }
+
+//////////////////////// FLOOR GEN ////////////////////////
 
 Floor FloorNew(void) {
 	Floor newFloor = (Floor) malloc(sizeof(struct floor));
@@ -147,19 +165,15 @@ Floor FloorNew(void) {
 	return newFloor;
 }
 
-static void floorFreeRec(Room newRoom, Room prev) {
-	if (newRoom == NULL) {
-		return;
-	}
+static void FloorFreeRec(Room curr, Room prev) {
+	if (curr == NULL) return;
 	
 	for (int i = 0; i < MAX_DIRS; i++) {
-		Room nextRoom = getAdjRoom(newRoom, i);
-		if (nextRoom == prev) {
-			continue;
-		}
-		floorFreeRec(nextRoom, newRoom);
+		Room nextRoom = getAdjRoom(curr, i);
+		if (nextRoom == prev) continue;
+		FloorFreeRec(nextRoom, curr);
 	}
-	RoomFree(newRoom);
+	RoomFree(curr);
 }
 
 void FloorClear(void) {
@@ -171,7 +185,7 @@ void FloorClear(void) {
 		}
 	}
 	
-	floorFreeRec(start, start);
+	FloorFreeRec(start, start);
 	free(currFloor);
 }
 
@@ -183,6 +197,21 @@ static bool isValidRoom(int tx, int ty) {
 	bool isValidTx = 0 <= tx && tx < MAX_FLOOR_SIZE;
 	bool isValidTy = 0 <= ty && ty < MAX_FLOOR_SIZE;
 	return isValidTx && isValidTy;
+}
+
+static void arrayifyRooms(Room curr, Room prev, int *index) {
+	if (curr == NULL || *index >= MAX_ROOMS) {
+		return;
+	}
+
+	roomsArr[*index] = curr;
+	(*index)++;
+
+	for (int i = 0; i < MAX_DIRS; i++) {
+		Room nextRoom = curr->adj[i];
+		if (nextRoom == prev) continue;
+		arrayifyRooms(nextRoom, curr, index);
+	}
 }
 
 static Room generateFloorRec(Room newRoom, Room prevRoom, int prevX, int prevY, int *limit, int prevDoor, int prob) {
@@ -250,9 +279,20 @@ void generateFloor(void) {
 	// Generate the rooms and assign NPCs
 	int limit = 0;
 	Room seededRoom = generateFloorRec(start, start, floorX, floorY, &limit, MAX_DIRS, 6);
-	assignNPCs(seededRoom);
-	setCurrRoom(seededRoom);
+	
+	// Array-ify the rooms
+	for (int i = 0; i < MAX_ROOMS; i++) roomsArr[i] = NULL;
+	int index = 0;
+	arrayifyRooms(start, start, &index);
+
+	// Assign the startRoom, endRoom and currRoom
 	currFloor->startRoom = seededRoom;
+	currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
+	while (currFloor->endRoom == NULL) currFloor->endRoom = roomsArr[rand(MAX_ROOMS)];
+	setCurrRoom(seededRoom);
+
+	// Assign the NPCs to room
+	assignNPCs(seededRoom);
 
 	// Clear the map for player exploration
 	for (int i = 0; i < MAX_FLOOR_SIZE; i++) {
@@ -267,27 +307,71 @@ void generateFloor(void) {
 	offMY = (MAX_CORR_SIZE + 2 - _currRoomH) >> 1;
 }
 
-Room getCurrRoom(void) { return currFloor->currRoom; }
-
-void setCurrRoom(Room newRoom) {
-    currFloor->currRoom = newRoom;
-    setCurrRoomH(newRoom->roomH);
-    setCurrRoomW(newRoom->roomW);
-}
-
-Room getStartRoom(void) { return currFloor->startRoom; }
-void setStartRoom(Room newRoom) { currFloor->startRoom = newRoom; }
-Room getEndRoom(void) { return currFloor->endRoom; }
-void setEndRoom(Room newRoom) { currFloor->endRoom = newRoom; }
-
-//////////////////////// OFFSET ////////////////////////
+//////////////////////// MAP OFFSET ////////////////////////
 
 int getOffMX(void) { return offMX; }
 void setOffMX(int offx) { offMX = offx; }
+
 int getOffMY(void) { return offMY; }
 void setOffMY(int offy) { offMY = offy; }
 
-//////////////////////// ROOMS ////////////////////////
+//////////////////////// ROOM METADATA ////////////////////////
+
+
+Room getAdjRoom(Room newRoom, int doorNum) {
+	return newRoom->adj[doorNum];
+}
+void setAdjRoom(Room r1, Room r2, int doorNum) {
+	r1->adj[doorNum] = r2;
+}
+
+int getRoomH(Room room) { return room->roomH; };
+int getRoomW(Room room) { return room->roomW; };
+
+static bool getRoomXYRec(Room curr, Room prev, Room goal, int *currFX, int *currFY) {
+	if (curr == NULL) return false;
+
+	if (curr == goal) return true;
+
+	for (int i = 0; i < MAX_DIRS; i++) {
+		Room next = curr->adj[i];
+		if (next == prev) continue;
+		int tempX = *currFX;
+		int tempY = *currFY;
+
+		if (i == UP) (*currFY)--;
+		if (i == LEFT) (*currFX)--;
+		if (i == DOWN) (*currFY)++;
+		if (i == RIGHT) (*currFX)++;
+
+		if (getRoomXYRec(next, curr, goal, currFX, currFY)) {
+			return true;
+		} else {
+			// Revert back our failures
+			(*currFX) = tempX;
+			(*currFY) = tempY;
+		}
+	}
+
+	return false;
+}
+
+Coor getRoomXY(Room room) {
+	Room start = currFloor->startRoom;
+	int currFX = MAX_RADIUS;
+	int currFY = MAX_RADIUS;
+	if (getRoomXYRec(start, start, room, &currFX, &currFY)) {
+		return (currFX << 8) + currFY;
+	}
+
+	return 0; // should never happen
+}
+
+bool isInEndRoom(void) {
+	return currFloor->currRoom == currFloor->endRoom;
+}
+
+//////////////////////// ROOM GEN ////////////////////////
 
 static int resize(int dim) {
     dim = dim % 2 == 0 ? dim + 1 : dim;
@@ -323,7 +407,7 @@ Room RoomNew(void) {
 }
 
 void RoomFree(Room newRoom) {
-	if (newRoom == NULL) return;
+	if (newRoom == NULL || newRoom->npcs == NULL) return;
 
 	// Free enemies
 	for (int i = 0; i < MAX_NPCS; i++) {
@@ -360,65 +444,6 @@ void makeDoor(Room newRoom, int doorNum) {
 	} else if (doorNum == RIGHT) {
 		newRoom->doors[doorNum] = ((newRoom->roomW - 1) << 8) + (newRoom->roomH >> 1);
 	}
-}
-
-Room getAdjRoom(Room newRoom, int doorNum) {
-	return newRoom->adj[doorNum];
-}
-
-void setAdjRoom(Room r1, Room r2, int doorNum) {
-	r1->adj[doorNum] = r2;
-}
-
-int getRoomH(Room room) { return room->roomH; };
-
-int getRoomW(Room room) { return room->roomW; };
-
-static bool getRoomXYRec(Room curr, Room prev, Room goal, int *floorX, int *floorY) {
-	if (curr == NULL) return false;
-
-	if (curr == goal) return true;
-
-	for (int i = 0; i < MAX_DIRS; i++) {
-		Room next = curr->adj[i];
-		if (next == prev) continue;
-		int tempX = *floorX;
-		int tempY = *floorY;
-
-		if (i == UP) {
-			(*floorY)--;
-		} else if (i == LEFT) {
-			(*floorX)--;
-		} else if (i == DOWN) {
-			(*floorY)++;
-		} else if (i == RIGHT) {
-			(*floorX)++;
-		}
-
-		if (getRoomXYRec(next, curr, goal, floorX, floorY)) {
-			return true;
-		} else {
-			// Revert back our failures
-			(*floorX) = tempX;
-			(*floorY) = tempY;
-		}
-	}
-
-	return false;
-}
-
-Coor getRoomXY(Room room) {
-	Room start = currFloor->startRoom;
-	int floorX = floorY = MAX_RADIUS;
-	if (getRoomXYRec(start, start, room, &floorX, &floorY)) {
-		return (floorX << 8) + floorY;
-	}
-
-	return 0; // should never happen
-}
-
-bool isInEndRoom(void) {
-	return currFloor->currRoom == currFloor->endRoom;
 }
 
 //////////////////////// MAP ////////////////////////

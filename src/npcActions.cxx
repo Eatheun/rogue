@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
 #include <conio.h>
 #include <windows.h>
 
+#include "../globals/cells.h"
 #include "../globals/const.h"
 #include "../headers/floorGen.h"
 #include "../headers/inputs.h"
@@ -21,7 +23,9 @@ struct npcActions {
 
 NPCActions NPCActionsNew(void) {
     NPCActions actions = (NPCActions) malloc(sizeof(struct npcActions));
-    actions->text = strdup(fillerText);
+
+    // Stub text and mission
+    actions->text = NULL;
     actions->mission = NULL;
     return actions;
 }
