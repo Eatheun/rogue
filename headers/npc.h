@@ -23,6 +23,7 @@ bool interactNPC(NPC npc);
 
 //////////////////////// FILES ////////////////////////
 
-char *getNpcFileData(NPC npc, char buf[], char fp[]);
+char *getNpcFileData(NPC npc, char buf[128], char fp[]);
+char *getNpcFlavour(char buf[1024], char fp[]);
 
 #endif // NPC_H

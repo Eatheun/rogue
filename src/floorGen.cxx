@@ -38,32 +38,33 @@ static void copyToNpcText(char **npcText, const char textToCopy[]) {
     strcat(*npcText, textToCopy);
 }
 
-static char *genDirectionalClue() {
-	return NULL;
+static char *genDirectionalClue(char **npcText, int npcCoor, int endCoor) {
+	bool isUp = (npcCoor & 0xff) > (endCoor & 0xff);
+    bool isLeft = (npcCoor >> 8) > (endCoor >> 8);
+    bool isDown = (npcCoor & 0xff) < (endCoor & 0xff);
+    bool isRight = (npcCoor >> 8) < (endCoor >> 8);
+
+    if (isUp) copyToNpcText(npcText, "The room is above. ");
+    if (isLeft) copyToNpcText(npcText, "The room is to the left. ");
+    if (isDown) copyToNpcText(npcText, "The room is below. ");
+    if (isRight) copyToNpcText(npcText, "The room is to the right. ");
+    
+    return *npcText;
 }
 
-static char *genDistanceClue() {
-	return NULL;
+static char *genDistanceClue(char **npcText) {
+	return *npcText;
 }
 
-static char *genHotColdClue() {
-	return NULL;
+static char *genHotColdClue(char **npcText) {
+	return *npcText;
 }
 
 static char *genNpcText(Room npcRoom, NPC npc) {
-    Coor npcRoomCoor = getRoomXY(npcRoom);
-    Coor endRoomCoor = getRoomXY(_endRoom);
-    bool isUp = (npcRoomCoor & 0xff) > (endRoomCoor & 0xff);
-    bool isLeft = (npcRoomCoor >> 8) > (endRoomCoor >> 8);
-    bool isDown = (npcRoomCoor & 0xff) < (endRoomCoor & 0xff);
-    bool isRight = (npcRoomCoor >> 8) < (endRoomCoor >> 8);
-
+    Coor npcCoor = getRoomXY(npcRoom);
+    Coor endCoor = getRoomXY(_endRoom);
     char *npcText = (char *) malloc(sizeof(char)); npcText[0] = '\0';
-	copyToNpcText(&npcText, "This place feels like a dungeon. I can hardly breathe. My senses are diminishing. And the neighbour next door smells like shit! If you want, I'll be of your utmost assistance. I'll do anything! Just please...get me out of here. I'm begging you. ");
-    if (isUp) copyToNpcText(&npcText, "The room is above. ");
-    if (isLeft) copyToNpcText(&npcText, "The room is to the left. ");
-    if (isDown) copyToNpcText(&npcText, "The room is below. ");
-    if (isRight) copyToNpcText(&npcText, "The room is to the right. ");
+    npcText = genDirectionalClue(&npcText, npcCoor, endCoor);
     
     return npcText;
 }

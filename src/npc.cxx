@@ -76,7 +76,7 @@ bool interactNPC(NPC npc) {
 
 //////////////////////// FILES ////////////////////////
 
-char *getNpcFileData(NPC npc, char buf[], char fp[]) {
+char *getNpcFileData(NPC npc, char buf[128], char fp[]) {
     FILE *fileToRead = fopen(fp, "r");
     if (fileToRead == NULL) {
         printf("\e[32E\e[0m");
@@ -92,6 +92,27 @@ char *getNpcFileData(NPC npc, char buf[], char fp[]) {
     buf[strlen(buf) - 1] = '\0';
 
     fclose(fileToRead);
+    return buf;
+}
 
+char *getNpcFlavour(char buf[1024], char fp[]) {
+    FILE *fileToRead = fopen(fp, "r");
+    if (fileToRead == NULL) {
+        printf("\e[32E\e[0m");
+        fprintf(stderr, "Missing file %s\n", fp);
+        Sleep(2000);
+        exit(1);
+    }
+
+    int randLine = rand(NUM_NPC_TYPES);
+    for (int i = 0; i < randLine; i++) {
+        char *ret = fgets(buf, 1024, fileToRead);
+        if (ret == NULL) {
+            fseek(fileToRead, 0, SEEK_SET);
+            fgets(buf, 1024, fileToRead);
+        }
+    }
+
+    fclose(fileToRead);
     return buf;
 }
