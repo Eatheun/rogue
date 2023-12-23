@@ -33,9 +33,18 @@ struct room {
 
 //////////////////////// NPC ////////////////////////
 
-static void copyToNpcText(char **npcText, const char textToCopy[]) {
+static void copyToNpcText(char **npcText, char textToCopy[]) {
     *npcText = (char *) realloc(*npcText, strlen(*npcText) + strlen(textToCopy) + 1);
     strcat(*npcText, textToCopy);
+}
+
+static int calculateRoomDiff(int npcCoor, int endCoor) {
+	int xDiff = (npcCoor >> 8) - (endCoor >> 8);
+	xDiff = xDiff < 0 ? xDiff * (-1) : xDiff;
+	int yDiff = (npcCoor & 0xff) - (endCoor & 0xff);
+	yDiff = yDiff < 0 ? yDiff * (-1) : yDiff;
+
+	return xDiff + yDiff;
 }
 
 static char *genDirectionalClue(char **npcText, int npcCoor, int endCoor) {
@@ -44,19 +53,41 @@ static char *genDirectionalClue(char **npcText, int npcCoor, int endCoor) {
     bool isDown = (npcCoor & 0xff) < (endCoor & 0xff);
     bool isRight = (npcCoor >> 8) < (endCoor >> 8);
 
-    if (isUp) copyToNpcText(npcText, "The room is above. ");
-    if (isLeft) copyToNpcText(npcText, "The room is to the left. ");
-    if (isDown) copyToNpcText(npcText, "The room is below. ");
-    if (isRight) copyToNpcText(npcText, "The room is to the right. ");
+	char directionText[64];
+    if (isUp) sprintf(directionText, "Search to the north. ");
+    if (isLeft) sprintf(directionText, "The exit is over there, to the left. ");
+    if (isDown) sprintf(directionText, "Go south. ");
+    if (isRight) sprintf(directionText, "Go over there, to the right. ");
+	copyToNpcText(npcText, directionText);
     
     return *npcText;
 }
 
-static char *genDistanceClue(char **npcText) {
+static char *genDistanceClue(char **npcText, int npcCoor, int endCoor) {
+	char distanceText[64];
+	sprintf(distanceText, "I can sense that %d rooms away, is the room. ", calculateRoomDiff(npcCoor, endCoor));
+	copyToNpcText(npcText, distanceText);
 	return *npcText;
 }
 
-static char *genHotColdClue(char **npcText) {
+static char *genHotColdClue(char **npcText, int npcCoor, int endCoor) {
+	int distance = calculateRoomDiff(npcCoor, endCoor);
+
+	char hotcoldText[64];
+	if (distance >= 0) sprintf(hotcoldText, "I feel the room's presence. It is. Too close. ");
+    if (distance > 1) sprintf(hotcoldText, "The end is close. Keep searching! ");
+    if (distance > 3) sprintf(hotcoldText, "It's there. The exit is definitely there. ");
+    if (distance > 5) sprintf(hotcoldText, "I can't sense the exit here. ");
+	copyToNpcText(npcText, hotcoldText);
+
+	return *npcText;
+}
+
+static char *genNoClue(char **npcText) {
+	char noText[64];
+	sprintf(noText, "Have a nice day! ");
+	copyToNpcText(npcText, noText);
+
 	return *npcText;
 }
 
@@ -64,7 +95,16 @@ static char *genNpcText(Room npcRoom, NPC npc) {
     Coor npcCoor = getRoomXY(npcRoom);
     Coor endCoor = getRoomXY(_endRoom);
     char *npcText = (char *) malloc(sizeof(char)); npcText[0] = '\0';
-    npcText = genDirectionalClue(&npcText, npcCoor, endCoor);
+	int spinChance = rand(9) + 1; // numbers 1 - 10
+	if (spinChance % 5 == 0) {
+		npcText = genDirectionalClue(&npcText, npcCoor, endCoor);
+	} else if (spinChance % 3 == 0) {
+		npcText = genDistanceClue(&npcText, npcCoor, endCoor);
+	} else if (spinChance % 2 == 0) {
+		npcText = genHotColdClue(&npcText, npcCoor, endCoor);
+	} else {
+		npcText = genNoClue(&npcText);
+	}
     
     return npcText;
 }
