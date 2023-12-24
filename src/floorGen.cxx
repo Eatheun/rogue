@@ -53,7 +53,7 @@ static char *genDirectionalClue(char **npcText, int npcCoor, int endCoor) {
     bool isDown = (npcCoor & 0xff) < (endCoor & 0xff);
     bool isRight = (npcCoor >> 8) < (endCoor >> 8);
 
-	char directionText[64];
+	char directionText[MAX_CLUE_LEN];
     if (isUp) sprintf(directionText, "Search to the north. ");
     if (isLeft) sprintf(directionText, "The exit is over there, to the left. ");
     if (isDown) sprintf(directionText, "Go south. ");
@@ -64,7 +64,7 @@ static char *genDirectionalClue(char **npcText, int npcCoor, int endCoor) {
 }
 
 static char *genDistanceClue(char **npcText, int npcCoor, int endCoor) {
-	char distanceText[64];
+	char distanceText[MAX_CLUE_LEN];
 	sprintf(distanceText, "I can sense that %d rooms away, is the room. ", calculateRoomDiff(npcCoor, endCoor));
 	copyToNpcText(npcText, distanceText);
 	return *npcText;
@@ -73,7 +73,7 @@ static char *genDistanceClue(char **npcText, int npcCoor, int endCoor) {
 static char *genHotColdClue(char **npcText, int npcCoor, int endCoor) {
 	int distance = calculateRoomDiff(npcCoor, endCoor);
 
-	char hotcoldText[64];
+	char hotcoldText[MAX_CLUE_LEN];
 	if (distance >= 0) sprintf(hotcoldText, "I feel the room's presence. It is. Too close. ");
     if (distance > 1) sprintf(hotcoldText, "The end is close. Keep searching! ");
     if (distance > 3) sprintf(hotcoldText, "It's there. The exit is definitely there. ");
@@ -84,7 +84,7 @@ static char *genHotColdClue(char **npcText, int npcCoor, int endCoor) {
 }
 
 static char *genNoClue(char **npcText) {
-	char noText[64];
+	char noText[MAX_CLUE_LEN];
 	sprintf(noText, "Have a nice day! ");
 	copyToNpcText(npcText, noText);
 
