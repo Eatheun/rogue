@@ -63,5 +63,6 @@ typedef int Coor;
 #define OPTTXTH (TXTH - 3)
 #define TITLE_OFF 1
 #define OPTTXTWSPLIT (TBOXW / 5)
+#define MAX_CLUE_LEN 256
 
 #endif // CONST_H
